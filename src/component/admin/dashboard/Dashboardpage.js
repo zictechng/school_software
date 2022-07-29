@@ -14,7 +14,7 @@ function Dashboardpage() {
                         </div>{/* /.col */}
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-                                <l><span className="badge badge-danger mr-3"> Last Login: 20/06/2022 | IP: 192.0.987.07</span></l>
+                                <li><span className="badge badge-danger mr-3"> Last Login: 20/06/2022 | IP: 192.0.987.07</span></li>
                                 <li className='mr-3'><button type="button" className="btn btn-block btn-info btn-sm">Student Portal</button></li>
                                 <li className='mr-3'><button type="button" className="btn btn-block btn-dark btn-sm">Visit Website</button></li>
                             </ol>

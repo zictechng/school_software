@@ -201,7 +201,7 @@ export default function Sidemenu() {
                                 </Link>
                                 <ul className="nav nav-treeview">
                                     <li className="nav-item">
-                                        <Link to="pages/layout/top-nav.html" className="nav-link">
+                                        <Link to="/admin/class" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Class</p>
                                         </Link>
