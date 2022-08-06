@@ -18,8 +18,7 @@ axios.defaults.baseURL = "http://localhost:8000/";
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.post['accept'] = 'application-json';
 // ends here
-axios.defaults.withCredentials = true;
-
+//axios.get("http://localhost:8000/Sanctum/csrf-cookie", { withCredentials: true });
 
 
 /* this for setting token for logged in user to call when logging out */

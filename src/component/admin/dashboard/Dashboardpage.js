@@ -4,6 +4,7 @@ import Dash1 from './Dash1'
 import Dash2 from './Dash2';
 
 function Dashboardpage() {
+    document.title = "Dashboard | ";
     return (
         <>
             <div className="content-header">

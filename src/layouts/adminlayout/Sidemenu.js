@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Sidemenu() {
     return (
@@ -72,31 +72,31 @@ export default function Sidemenu() {
                                 </Link>
                                 <ul className="nav nav-treeview">
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/student" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Student</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/add-student" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Add Student</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/staff" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Staff</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/add-staff" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Add Staff</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/admin-user" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Admin Users </p>
                                         </Link>
@@ -117,44 +117,44 @@ export default function Sidemenu() {
                                 </Link>
                                 <ul className="nav nav-treeview">
                                     <li className="nav-item">
-                                        <Link to="pages/layout/top-nav.html" className="nav-link">
+                                        <Link to="/admin/result" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Add Result</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/top-nav-sidebar.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Print Result</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/boxed.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>View Result</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Add CA</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Upload Result </p>
                                         </Link>
                                     </li>
 
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Manage Upload </p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Maintain Result </p>
                                         </Link>
@@ -174,13 +174,13 @@ export default function Sidemenu() {
                                 </Link>
                                 <ul className="nav nav-treeview">
                                     <li className="nav-item">
-                                        <Link to="pages/layout/top-nav.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Exam Single Result Entry</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/top-nav-sidebar.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>CA Single Result Entry</p>
                                         </Link>
@@ -207,44 +207,44 @@ export default function Sidemenu() {
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/top-nav-sidebar.html" className="nav-link">
+                                        <Link to="/admin/subject" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Subject</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/boxed.html" className="nav-link">
+                                        <Link to="/admin/academic-session" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Academic Session</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar.html" className="nav-link">
+                                        <Link to="/admin/term" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Academic Term</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="/admin/school-category" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>School Category </p>
                                         </Link>
                                     </li>
 
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="/admin/school-resumption" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>School Resumption Date </p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="/admin/days-open" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
-                                            <p>School Opening Date </p>
+                                            <p>Days School Open </p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="/admin/current-session" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>School Current Session </p>
                                         </Link>
@@ -264,13 +264,13 @@ export default function Sidemenu() {
                                 </Link>
                                 <ul className="nav nav-treeview">
                                     <li className="nav-item">
-                                        <Link to="pages/layout/top-nav.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>System Log</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/top-nav-sidebar.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>System Users</p>
                                         </Link>
@@ -292,13 +292,13 @@ export default function Sidemenu() {
                                 </Link>
                                 <ul className="nav nav-treeview">
                                     <li className="nav-item">
-                                        <Link to="pages/layout/top-nav.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Teacher Report</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/top-nav-sidebar.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Lesson Plans </p>
                                         </Link>
@@ -319,67 +319,73 @@ export default function Sidemenu() {
                                 </Link>
                                 <ul className="nav nav-treeview">
                                     <li className="nav-item">
-                                        <Link to="pages/layout/top-nav.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Manage Promotion</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/top-nav-sidebar.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Manage Graduation</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/boxed.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Manage Attendance</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Print Result Template</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Time Table </p>
                                         </Link>
                                     </li>
 
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Broad Sheet </p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Generate PIN </p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Assign Subject to Teacher </p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Assign Class to Teacher </p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="pages/layout/fixed-sidebar-custom.html" className="nav-link">
+                                        <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Affective/Psychomotor Domain </p>
                                         </Link>
                                     </li>
                                 </ul>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/admin/save-text" className="nav-link">
+                                    <i className="far fa-circle nav-icon" />
+                                    <p>Save Text </p>
+                                </Link>
                             </li>
                             <hr />
                             <li className="nav-header"><span className="badge badge-info"> Action</span></li>
