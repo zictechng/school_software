@@ -126,6 +126,78 @@ function TestCode() {
                     </tbody>
                 </table>
             </div>
+            <div className="row">
+                <div className="col-md-6">
+                    <div className="card">
+                        <div className="card-header">
+                            <h3 className="card-title">Vertical Progress Bars Different Sizes</h3>
+                        </div>
+                        {/* /.card-header */}
+                        <div className="card-body text-center">
+                            <p>By adding the class <code>.vertical</code> and <code>.progress-sm</code>, <code>.progress-xs</code>
+                                or
+                                <code>.progress-xxs</code> we achieve:</p>
+                            <div className="progress vertical active">
+                                <div className="progress-bar bg-primary progress-bar-striped" role="progressbar" aria-valuenow={40} aria-valuemin={0} aria-valuemax={100} style={{ height: '40%' }}>
+                                    <span className="sr-only">40%</span>
+                                </div>
+                            </div>
+                            <div className="progress vertical progress-sm">
+                                <div className="progress-bar bg-success" role="progressbar" aria-valuenow={20} aria-valuemin={0} aria-valuemax={100} style={{ height: '100%' }}>
+                                    <span className="sr-only">100%</span>
+                                </div>
+                            </div>
+                            <div className="progress vertical progress-xs">
+                                <div className="progress-bar bg-warning progress-bar-striped" role="progressbar" aria-valuenow={60} aria-valuemin={0} aria-valuemax={100} style={{ height: '60%' }}>
+                                    <span className="sr-only">60%</span>
+                                </div>
+                            </div>
+                            <div className="progress vertical progress-xxs">
+                                <div className="progress-bar bg-info progress-bar-striped" role="progressbar" aria-valuenow={60} aria-valuemin={0} aria-valuemax={100} style={{ height: '60%' }}>
+                                    <span className="sr-only">60%</span>
+                                </div>
+                            </div>
+                        </div>
+                        {/* /.card-body */}
+                    </div>
+                    {/* /.card */}
+                </div>
+                {/* /.col (left) */}
+                <div className="col-md-6">
+                    <div className="card">
+                        <div className="card-header">
+                            <h3 className="card-title">Vertical Progress bars</h3>
+                        </div>
+                        {/* /.card-header */}
+                        <div className="card-body text-center">
+                            <p>By adding the class <code>.vertical</code> we achieve:</p>
+                            <div className="progress vertical">
+                                <div className="progress-bar bg-success" role="progressbar" aria-valuenow={40} aria-valuemin={0} aria-valuemax={100} style={{ height: '40%' }}>
+                                    <span className="sr-only">40%</span>
+                                </div>
+                            </div>
+                            <div className="progress vertical">
+                                <div className="progress-bar bg-info" role="progressbar" aria-valuenow={20} aria-valuemin={0} aria-valuemax={100} style={{ height: '20%' }}>
+                                    <span className="sr-only">20%</span>
+                                </div>
+                            </div>
+                            <div className="progress vertical">
+                                <div className="progress-bar bg-warning" role="progressbar" aria-valuenow={60} aria-valuemin={0} aria-valuemax={100} style={{ height: '60%' }}>
+                                    <span className="sr-only">60%</span>
+                                </div>
+                            </div>
+                            <div className="progress vertical">
+                                <div className="progress-bar bg-danger" role="progressbar" aria-valuenow={80} aria-valuemin={0} aria-valuemax={100} style={{ height: '80%' }}>
+                                    <span className="sr-only">80%</span>
+                                </div>
+                            </div>
+                        </div>
+                        {/* /.card-body */}
+                    </div>
+                    {/* /.card */}
+                </div>
+                {/* /.col (right) */}
+            </div>
 
         </>
     )

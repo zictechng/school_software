@@ -116,7 +116,6 @@ function EditStudent(props) {
             staff_file_no: student_detailsInput.staff_file_no,
 
         }
-        console.log(student_detailsInput.class_apply);
         try {
             // let create the api url here
             axios.post(`/api/student_update/${record_id}`, data).then(res => {

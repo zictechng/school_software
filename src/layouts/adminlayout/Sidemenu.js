@@ -112,7 +112,7 @@ export default function Sidemenu() {
                                     <p>
                                         Manage Result
                                         <i className="fas fa-angle-left right" />
-                                        <span className="badge badge-danger right"> 7</span>
+                                        <span className="badge badge-danger right"> 5</span>
                                     </p>
                                 </Link>
                                 <ul className="nav nav-treeview">
@@ -129,21 +129,15 @@ export default function Sidemenu() {
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/view-result" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>View Result</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/ca-result" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Add CA</p>
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link to="#" className="nav-link">
-                                            <i className="far fa-circle nav-icon" />
-                                            <p>Upload Result </p>
                                         </Link>
                                     </li>
 
@@ -153,15 +147,61 @@ export default function Sidemenu() {
                                             <p>Manage Upload </p>
                                         </Link>
                                     </li>
-                                    <li className="nav-item">
-                                        <Link to="#" className="nav-link">
-                                            <i className="far fa-circle nav-icon" />
-                                            <p>Maintain Result </p>
-                                        </Link>
-                                    </li>
+
                                 </ul>
                             </li>
 
+                            <li className="nav-header"><span className="badge badge-warning">Maintenance</span></li>
+                            <li className="nav-item">
+                                <Link to="#" className="nav-link">
+                                    <i className="nav-icon fas fa-copy" />
+                                    <p>
+                                        Maintenance Result
+                                        <i className="fas fa-angle-left right" />
+                                        <span className="badge badge-danger right"> 6</span>
+                                    </p>
+                                </Link>
+                                <ul className="nav nav-treeview">
+                                    <li className="nav-item">
+                                        <Link to="#" className="nav-link">
+                                            <i className="far fa-circle nav-icon" />
+                                            <p>Grade Result</p>
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link to="#" className="nav-link">
+                                            <i className="far fa-circle nav-icon" />
+                                            <p>Grade Subject Position</p>
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link to="#" className="nav-link">
+                                            <i className="far fa-circle nav-icon" />
+                                            <p>Repair Result</p>
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link to="#" className="nav-link">
+                                            <i className="far fa-circle nav-icon" />
+                                            <p>Repair Class Position</p>
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link to="#" className="nav-link">
+                                            <i className="far fa-circle nav-icon" />
+                                            <p>Repair Subject</p>
+                                        </Link>
+                                    </li>
+
+                                    <li className="nav-item">
+                                        <Link to="#" className="nav-link">
+                                            <i className="far fa-circle nav-icon" />
+                                            <p>Trash CA/Result Details </p>
+                                        </Link>
+                                    </li>
+
+                                </ul>
+                            </li>
                             <li className="nav-header"><span className="badge badge-warning"> Result Single Entry</span></li>
                             <li className="nav-item">
                                 <Link to="#" className="nav-link">
@@ -174,13 +214,13 @@ export default function Sidemenu() {
                                 </Link>
                                 <ul className="nav nav-treeview">
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/single-result" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Exam Single Result Entry</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/single-ca" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>CA Single Result Entry</p>
                                         </Link>

@@ -52,6 +52,7 @@
     "unicorn/prefer-node-append": "off",
     "unicorn/prefer-query-selector": "off",
     "unicorn/prefer-spread": "off",
-    "unicorn/prevent-abbreviations": "off"
+    "unicorn/prevent-abbreviations": "off",
+    
   }
 }

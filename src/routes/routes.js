@@ -25,6 +25,14 @@ import EditAdmin from '../component/admin/staffdata/EditAdmin';
 import AddResult from '../component/admin/resultmodule/AddResult';
 import StudentResultProcess from '../component/admin/resultmodule/StudentResultProcess';
 import EnterResult from '../component/admin/resultmodule/EnterResult';
+import SingleResult from '../component/admin/resultmodule/SingleResult';
+import DynamicInput from '../component/admin/resultmodule/DynamicInput';
+import CAResult from '../component/admin/resultmodule/CAResult';
+import EnterCA from '../component/admin/resultmodule/EnterCA';
+import ViewResult from '../component/admin/resultmodule/ViewResult';
+import ResultView from '../component/admin/resultmodule/ResultView';
+import SubjectResultView from '../component/admin/resultmodule/SubjectResultView';
+import SingleCA from '../component/admin/resultmodule/SingleCA';
 
 
 const routes = [
@@ -56,6 +64,14 @@ const routes = [
     { path: '/admin/result', exact: true, name: 'AddResult', component: AddResult },
     { path: '/admin/result-process', exact: true, name: 'StudentResultProcess', component: StudentResultProcess },
     { path: '/admin/enter-result', exact: true, name: 'EnterResult', component: EnterResult },
+    { path: '/admin/single-result', exact: true, name: 'SingleResult', component: SingleResult },
+    { path: '/admin/dynamic-input', exact: true, name: 'DynamicInput', component: DynamicInput },
+    { path: '/admin/ca-result', exact: true, name: 'CAResult', component: CAResult },
+    { path: '/admin/enter-ca', exact: true, name: 'EnterCA', component: EnterCA },
+    { path: '/admin/view-result', exact: true, name: 'ViewResult', component: ViewResult },
+    { path: '/admin/result-view', exact: true, name: 'ResultView', component: ResultView },
+    { path: '/admin/result-subject', exact: true, name: 'SubjectResultView', component: SubjectResultView },
+    { path: '/admin/single-ca', exact: true, name: 'SingleCA', component: SingleCA },
 
 
 ]

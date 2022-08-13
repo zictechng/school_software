@@ -78,7 +78,7 @@ function AddStudent() {
             staff_no: add_studentInput.staff_no,
 
         }
-        console.log(add_studentInput.class_apply);
+        //console.log(add_studentInput.class_apply);
         try {
             // let create the api url here
             axios.post(`/api/save_student`, data).then(res => {

@@ -5,9 +5,9 @@ import { Modal, Button } from 'react-bootstrap';
 import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
 
-function AddResult() {
+function CAResult() {
     const history = useHistory();
-    document.title = "Manage Result | ";
+    document.title = "Manage CA Result | ";
     const [result_details, setResultDetails] = useState([]);
 
     const [isfetchLoading, setIsFetchloading] = useState(false);
@@ -17,13 +17,14 @@ function AddResult() {
     const [schoolTerm, setSchoolTerm] = useState([]);
     const [all_class, setAllClass] = useState([]);
     const [all_subjects, setAllSubjects] = useState([]);
-    const [all_category, setCatogory] = useState([]);
+
+    const [sch_category, setSchCatgory] = useState([]);
 
     const [fetch_result, setFetchResult] = useState({});
     const [list_error, setListError] = useState([]);
     //const [loading, setLoading] = useState(true);
     //decl all variable here
-    const [add_resultInput, setAddResultInput] = useState({
+    const [add_resultInput, setCAResultInput] = useState({
         school_year: '',
         school_term: '',
         class: '',
@@ -34,7 +35,7 @@ function AddResult() {
     // declare input handling function here
     const handleInput = (e) => {
         e.persist();
-        setAddResultInput({ ...add_resultInput, [e.target.name]: e.target.value })
+        setCAResultInput({ ...add_resultInput, [e.target.name]: e.target.value })
     }
     const submitStaff = (e) => {
         e.preventDefault();
@@ -48,13 +49,13 @@ function AddResult() {
         }
         try {
             // let create the api url here
-            axios.post(`/api/result_process_start`, data).then(res => {
+            axios.post(`/api/result_process_ca`, data).then(res => {
 
                 if (res.data.status === 200) {
                     // successful message
                     toast.success(res.data.allResultDetails.message, { theme: 'colored' });
                     setFetchResult(res.data.allResultDetails.result_record_details);
-                    setAddResultInput({
+                    setCAResultInput({
                         ...add_resultInput,
                         school_year: '',
                         school_term: '',
@@ -64,9 +65,9 @@ function AddResult() {
 
                     });
                     e.target.reset();
-                    localStorage.setItem("Tid", res.data.allResultDetails.result_record_details.r_tid);
+                    localStorage.setItem("Tid", res.data.allResultDetails.result_record_details.tid_code);
                     setListError([]);
-                    history.push(`/admin/enter-result`);
+                    history.push(`/admin/enter-ca`);
                 }
                 // record already exist
                 else if (res.data.status === 402) {
@@ -77,7 +78,7 @@ function AddResult() {
                 else if (res.data.status === 403) {
                     toast.error(res.data.message, { theme: 'colored' });
 
-                    history.push(`/admin/result`);
+                    history.push(`/admin/ca-result`);
                 }
                 // data input required
                 else if (res.data.status === 422) {
@@ -107,13 +108,13 @@ function AddResult() {
 
     }
     // create a function to fetch all data here
-    const getAllResult = () => {
+    const getAllCA = () => {
         try {
             setIsFetchloading(true);
             // let create the api url here
-            axios.get(`/api/fetch_result`).then(res => {
+            axios.get(`/api/fetch_ca_result`).then(res => {
                 if (res.data.status === 200) {
-                    setResultDetails(res.data.result_record);
+                    setResultDetails(res.data.ca_record);
                     //console.log(res.data.history_record);
                 }
                 // login required
@@ -133,27 +134,9 @@ function AddResult() {
     }
     useEffect(() => {
         // call the function here
-        getAllResult();
+        getAllCA();
         return () => {
         };
-    }, []);
-
-    // create a function to fetch school session  data here
-    useEffect(() => {
-        axios.get(`/api/fetch_school_session`).then(res => {
-            if (res.data.status === 200) {
-                setSchoolYear(res.data.session_Details);
-            }
-        });
-    }, []);
-
-    // create a function to fetch school term  data here
-    useEffect(() => {
-        axios.get(`/api/fetch_allterm`).then(res => {
-            if (res.data.status === 200) {
-                setSchoolTerm(res.data.termrecord);
-            }
-        });
     }, []);
 
     // create a function to fetch class data here
@@ -161,22 +144,14 @@ function AddResult() {
         axios.get(`/api/fetch_all_details`).then(res => {
             if (res.data.status === 200) {
                 setAllClass(res.data.allDetails.class_details);
-
                 setAllSubjects(res.data.allDetails.subject_details);
-                setCatogory(res.data.allDetails.sch_category_details);
+                setSchoolTerm(res.data.allDetails.term_details);
+                setSchoolYear(res.data.allDetails.session_details);
+                setSchCatgory(res.data.allDetails.sch_category_details)
             }
         });
     }, []);
-    // if (loading) {
-    //     return (
-    //         <div className="card-body">
-    //             <div className='text-center'>
-    //                 <div className="spinner-border spinner-border-sm text-info" role="status">
-    //                 </div> Loading
-    //             </div>
-    //         </div>
-    //     )
-    // }
+
 
     // delete operation using modal dialog comes here
     const [deleteID, setDeleteID] = useState("");
@@ -195,12 +170,12 @@ function AddResult() {
         thisClicked.innerHTML = "<span class='spinner-border spinner-border-sm' aria-hidden='true'></span><span class='sr-only'></span>";
         /* send axios request to delete the record from the database here */
         try {
-            axios.delete(`/api/delete_result/${deleteID}`).then(res => {
+            axios.delete(`/api/delete_ca_result/${deleteID}`).then(res => {
                 if (res.data.status === 200) {
                     toast.success(res.data.message, { theme: 'colored' });
                     //thisClicked.closest("tr").remove();
                     setShow(false);
-                    getAllResult();
+                    getAllCA();
                 }
                 else if (res.data.status === 402) {
                     toast.warning(res.data.message, { theme: 'colored' });
@@ -213,7 +188,16 @@ function AddResult() {
             toast.error("sorry, server error occurred! Try again. ".error, { theme: 'colored' });
         }
     }
-
+    // if (loading) {
+    //     return (
+    //         <div className="card-body">
+    //             <div className='text-center'>
+    //                 <div className="spinner-border spinner-border-sm text-info" role="status">
+    //                 </div> Loading
+    //             </div>
+    //         </div>
+    //     )
+    // }
     var table_record = "";
     if (result_details.length > 0) {
         table_record = <div>
@@ -224,9 +208,9 @@ function AddResult() {
                         <th>TID</th>
                         <th>Academic Year</th>
                         <th>Academic Term</th>
-                        <th>Sch. Category</th>
                         <th>Class</th>
                         <th>Subject</th>
+                        <th>Sch. Category</th>
                         <th>Added By</th>
                         <th>Reg. Date</th>
                         <th>Action</th>
@@ -237,19 +221,19 @@ function AddResult() {
                         return (
                             <tr key={i}>
                                 <td>{i + 1}</td>
-                                <td>{item.r_tid}</td>
-                                <td>{item.school_year}</td>
-                                <td>{item.school_term}</td>
-                                <td>{item.school_category}</td>
+                                <td>{item.tid_code}</td>
+                                <td>{item.year}</td>
+                                <td>{item.term}</td>
                                 <td>{item.class}</td>
                                 <td>{item.subject}</td>
-                                <td>{item.addby}</td>
-                                <td>{item.r_date}</td>
+                                <td>{item.sch_category}</td>
+                                <td>{item.add_by}</td>
+                                <td>{item.record_date}</td>
                                 {/* <td> <span className='badge bg-danger mr-2' type='button'><i onClick={(e) => deleteResult(e, item.id)} className='fa fa-trash-o text-white'></i></span> */}
                                 <td> <span className="badge bg-danger mr-2" type="button"><i onClick={() => deleteDetails(item.id)} className="fa fa-trash-o text-white"></i></span>
                                     {" "} {" "}
 
-                                    <Link to={`view-staff/${item.id}`} data-tip="Add New Result" data-place="bottom"><span className='badge bg-info' type='button'><i className='fa fa-eye text-white'></i></span></Link>
+                                    <Link to="#" data-tip="Add New Result" data-place="bottom"><span className='badge bg-info' type='button'><i className='fa fa-eye text-white'></i></span></Link>
                                 </td>
                             </tr>
                         )
@@ -272,14 +256,14 @@ function AddResult() {
 
                     <div className="row mb-2">
                         <div className="col-sm-6">
-                            <h4 className="m-0">Manage Result Details</h4>
+                            <h4 className="m-0">Manage CA Result Details</h4>
                         </div>
 
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
                                 <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm" data-tip="Dashboard" data-place="bottom"><i className='fa fa-home'></i> </button></Link></li>
                                 <li className='mr-3'>
-                                    <button type="button" className="btn btn-block btn-info btn-sm" data-toggle="modal" data-target="#Addschool_resumption" data-tip="Add New Result" data-place="bottom">Add Result</button>
+                                    <button type="button" className="btn btn-block btn-info btn-sm" data-toggle="modal" data-target="#Addschool_resumption" data-tip="Add New CA Result" data-place="bottom">Add CA Result</button>
                                 </li>
                             </ol>
                         </div>
@@ -287,7 +271,7 @@ function AddResult() {
 
                     <div className="card table-responsive">
                         <div className="card-header">
-                            <h3 className="card-title">Current result details </h3>
+                            <h3 className="card-title">Current CA result details </h3>
                         </div>
                         {/* /.card-header */}
                         <div className="card-body">
@@ -363,7 +347,7 @@ function AddResult() {
                                                 <select name='school_type' className='form-control' onChange={handleInput} value={add_resultInput.school_type}>
                                                     <option>Select Category</option>
                                                     {
-                                                        all_category.map((item) => {
+                                                        sch_category.map((item) => {
                                                             return (
                                                                 <option value={item.id} key={item.id}>{item.sc_name}</option>
                                                             )
@@ -431,7 +415,6 @@ function AddResult() {
                     <Modal.Title>Caution</Modal.Title>
                 </Modal.Header>
                 <Modal.Body><h4>Are you sure you want to do this?</h4>
-                    {deleteID}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" size="sm" onClick={handleClose}>
@@ -448,4 +431,4 @@ function AddResult() {
     )
 }
 
-export default AddResult;
+export default CAResult;
