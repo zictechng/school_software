@@ -163,9 +163,9 @@ export default function Sidemenu() {
                                 </Link>
                                 <ul className="nav nav-treeview">
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/grade-result" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
-                                            <p>Grade Result</p>
+                                            <p>Grade Class Position</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
@@ -175,26 +175,26 @@ export default function Sidemenu() {
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/repair-result" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Repair Result</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/repair-position" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Repair Class Position</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/repair-subject" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Repair Subject</p>
                                         </Link>
                                     </li>
 
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/trash-ca" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Trash CA/Result Details </p>
                                         </Link>

@@ -414,7 +414,7 @@ function CAResult() {
                 <Modal.Header style={{ background: 'orange', color: 'white' }}>
                     <Modal.Title>Caution</Modal.Title>
                 </Modal.Header>
-                <Modal.Body><h4>Are you sure you want to do this?</h4>
+                <Modal.Body><h4>Are you sure you want to delete this?</h4>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" size="sm" onClick={handleClose}>

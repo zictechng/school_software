@@ -1,17 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Profile() {
-
+function RepairSubject() {
     return (
         <>
-
             <div className="content-header">
                 <div className="container-fluid">
 
                     <div className="row mb-2">
                         <div className="col-sm-6">
-                            <h4 className="m-0">Profile</h4>
+                            <h4 className="m-0">Repair subject management system:</h4>
                         </div>
 
                         <div className="col-sm-6">
@@ -24,8 +22,8 @@ function Profile() {
                         </div>
                     </div>
                     <div className="card table-responsive">
-                        <div className="card-header">
-                            <h3 className="card-title"> </h3>
+                        <div className="card-header bg-dark">
+                            <h3 className="card-title"></h3>
                         </div>
 
                         <div className="card-body">
@@ -40,10 +38,7 @@ function Profile() {
                 </div>
             </div>
         </>
-
-
-
-
     )
 }
-export default Profile;
+
+export default RepairSubject

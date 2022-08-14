@@ -33,6 +33,11 @@ import ViewResult from '../component/admin/resultmodule/ViewResult';
 import ResultView from '../component/admin/resultmodule/ResultView';
 import SubjectResultView from '../component/admin/resultmodule/SubjectResultView';
 import SingleCA from '../component/admin/resultmodule/SingleCA';
+import GradeClassResult from '../component/admin/maintainresult/GradeClassResult';
+import RepairResult from '../component/admin/maintainresult/RepairResult';
+import RepairClassPosition from '../component/admin/maintainresult/RepairClassPosition';
+import RepairSubject from '../component/admin/maintainresult/RepairSubject';
+import TrashCAResult from '../component/admin/maintainresult/TrashCAResult';
 
 
 const routes = [
@@ -72,6 +77,11 @@ const routes = [
     { path: '/admin/result-view', exact: true, name: 'ResultView', component: ResultView },
     { path: '/admin/result-subject', exact: true, name: 'SubjectResultView', component: SubjectResultView },
     { path: '/admin/single-ca', exact: true, name: 'SingleCA', component: SingleCA },
+    { path: '/admin/grade-result', exact: true, name: 'GradeClassResult', component: GradeClassResult },
+    { path: '/admin/repair-result', exact: true, name: 'RepairResult', component: RepairResult },
+    { path: '/admin/repair-position', exact: true, name: 'RepairClassPosition', component: RepairClassPosition },
+    { path: '/admin/repair-subject', exact: true, name: 'RepairSubject', component: RepairSubject },
+    { path: '/admin/trash-ca', exact: true, name: 'TrashCAResult', component: TrashCAResult },
 
 
 ]
