@@ -154,7 +154,7 @@ function EditAdmin(props) {
     useEffect(() => {
         const id = props.match.params.id;
         try {
-            axios.get(`/api/fetch_edit/${id}`).then(res => {
+            axios.get(`/api/fetch_admin_edit/${id}`).then(res => {
                 if (res.data.status === 200) {
                     setAdminUserInput(res.data.admin_editDetails);
                 }

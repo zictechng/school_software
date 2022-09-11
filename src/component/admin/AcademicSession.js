@@ -262,7 +262,10 @@ function AcademicSession() {
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="AddSession_modal" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
                         <form onSubmit={submitAcademic} className="form-horizontal">
                             <div className="modal-header bg-dark">
@@ -294,7 +297,7 @@ function AcademicSession() {
                             <div className="modal-footer">
                                 <button className="btn btn-danger" data-dismiss="modal">Cancel</button>
                                 <button disabled={isLoading} className="btn btn-success">
-                                    {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                    {/* {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>} */}
                                     Add
                                 </button>
                             </div>
@@ -308,7 +311,10 @@ function AcademicSession() {
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="Editsubject_modal" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
                         <form onSubmit={submitSessionUpdate} className="form-horizontal">
                             <div className="modal-header bg-dark">
@@ -339,7 +345,7 @@ function AcademicSession() {
                             <div className="modal-footer">
                                 <button className="btn btn-danger" data-dismiss="modal">Cancel</button>
                                 <button disabled={isLoading} className="btn btn-success">
-                                    {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                    {/* {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>} */}
                                     Update
                                 </button>
                             </div>
@@ -351,4 +357,4 @@ function AcademicSession() {
     )
 }
 
-export default AcademicSession
+export default AcademicSession;

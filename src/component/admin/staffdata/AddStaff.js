@@ -150,6 +150,10 @@ function AddStaff() {
                             <h3 className="card-title">Fill the form correctly to register new staff details</h3>
                         </div>
                         {/* /.card-header */}
+                        {isLoading && <div className='overlay text-center'>
+                            <div className="spinner-border spinner-border text-info" role="status">
+                            </div>
+                        </div>}
                         <div className="card-body">
                             <div className='text-center'>
                             </div>
@@ -260,7 +264,7 @@ function AddStaff() {
                                         <div className="form-group">
                                             <label>Email</label>
                                             <input type="text" name='email' onChange={handleInput} value={add_staffInput.email} className="form-control" placeholder="Email Address" />
-
+                                            <span className='text-danger'>{add_staffInput.error_list.email}</span>
                                         </div>
                                     </div>
                                 </div>

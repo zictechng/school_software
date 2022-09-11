@@ -354,10 +354,6 @@ function ViewStudent(props) {
                         {/* /.col */}
                     </div>
 
-
-
-
-
                 </div>
             </div>
         </>

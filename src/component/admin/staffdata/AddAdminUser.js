@@ -115,6 +115,10 @@ function AddAdminUser() {
                             <h3 className="card-title">Fill the form correctly to register new admin user details</h3>
                         </div>
                         {/* /.card-header */}
+                        {isLoading && <div className='overlay text-center'>
+                            <div className="spinner-border spinner-border text-info" role="status">
+                            </div>
+                        </div>}
                         <div className="card-body">
                             <div className='text-center'>
                             </div>

@@ -146,6 +146,7 @@ function AcademicTerm() {
         // let create the api url here
         axios.get(`/api/fetch_all_term`).then(res => {
             if (res.data.status === 200) {
+
                 setTermDetails(res.data.term_record);
                 //console.log(res.data.history_record);
             }
@@ -260,7 +261,10 @@ function AcademicTerm() {
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="AddTerm_modal" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
                         <form onSubmit={submitTerm} className="form-horizontal">
                             <div className="modal-header bg-dark">
@@ -292,7 +296,7 @@ function AcademicTerm() {
                             <div className="modal-footer">
                                 <button className="btn btn-danger" data-dismiss="modal">Cancel</button>
                                 <button disabled={isLoading} className="btn btn-success">
-                                    {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                    {/* {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>} */}
                                     Add
                                 </button>
                             </div>
@@ -306,7 +310,10 @@ function AcademicTerm() {
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="EditTerm_modal" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
                         <form onSubmit={submitTermUpdate} className="form-horizontal">
                             <div className="modal-header bg-dark">
@@ -339,7 +346,7 @@ function AcademicTerm() {
                             <div className="modal-footer">
                                 <button className="btn btn-danger" data-dismiss="modal">Cancel</button>
                                 <button disabled={isLoading} className="btn btn-success">
-                                    {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                    {/* {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>} */}
                                     Update
                                 </button>
                             </div>

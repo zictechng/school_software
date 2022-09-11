@@ -302,4 +302,4 @@ function ViewStaff(props) {
     )
 }
 
-export default ViewStaff
+export default ViewStaff;

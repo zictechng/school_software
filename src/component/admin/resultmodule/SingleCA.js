@@ -3,8 +3,10 @@ import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ReactTooltip from 'react-tooltip';
+import Select from "react-select";
 
 function SingleCA() {
+    document.title = "Manage Single CA Entry | ";
     const history = useHistory();
     const [loading, setLoading] = useState(true);
     const [isLoading, setIsloading] = useState(false);
@@ -142,6 +144,39 @@ function SingleCA() {
         }
     };
 
+    // CODE FOR SELECT 2
+    const termOptions = [];
+    schoolTerm.map((term) => {
+        termOptions.push({ value: term.id, label: term.term_name });
+    });
+
+    const yearOptions = [];
+    schoolYears.map((term) => {
+        yearOptions.push({ value: term.id, label: term.academic_name });
+    });
+
+    const categoryOptions = [];
+    sch_category.map((term) => {
+        categoryOptions.push({ value: term.id, label: term.sc_name });
+    });
+
+    const classOptions = [];
+    all_class.map((term) => {
+        classOptions.push({ value: term.id, label: term.class_name });
+    });
+
+    const subjectOptions = [];
+    all_subjects.map((term) => {
+        subjectOptions.push({ value: term.id, label: term.subject_name });
+    });
+
+    function handleSelect2Input(stateName, selectedItem) {
+        setFormData({ ...formData, [stateName]: selectedItem.value });
+    }
+    const p = {
+        color: "#97a3b9",
+        marginTop: "10px",
+    };
     if (loading) {
         return (
             <div className="card-body">
@@ -191,29 +226,34 @@ function SingleCA() {
 
                     <div className="card table-responsive">
                         <div className="card-header">
-                            <h3 className="card-title">Single CA Result Entry! <Link to="#" className="text-danger">Use this module to enter CA result for selected student</Link></h3>
+                            <h3 className="card-title">
+                                <p style={p}>
+                                    Single CA Result Entry!
+                                    {" "}<Link to="#" className="text-danger"> Use this module to enter CA result for selected student</Link>
+                                </p>
+
+                            </h3>
                         </div>
                         {/* /.card-header */}
+                        {isLoading && <div className='overlay text-center'>
+                            <div className="spinner-border spinner-border text-info" role="status">
+                            </div>
+                        </div>}
                         <div className="card-body">
                             <div className="text-center"></div>
                             <div className="card-body">
                                 <div className="row">
                                     <div className="col-sm-4">
                                         <div className="form-group">
-                                            <select
+                                            <Select
                                                 name="subject"
-                                                className="form-control"
-                                                onChange={handleFormDataChange}
-                                            >
-                                                <option>Select Subject</option>
-                                                {all_subjects.map((item) => {
-                                                    return (
-                                                        <option value={item.id} key={item.id}>
-                                                            {item.subject_name}
-                                                        </option>
-                                                    );
-                                                })}
-                                            </select>
+                                                options={subjectOptions}
+                                                isClearable={true}
+                                                isSearchable={true}
+                                                isDisabled={false}
+                                                isLoading={false}
+                                                onChange={(e) => handleSelect2Input("subject", e)}
+                                            />
                                             {validationErrors &&
                                                 validationErrors[`subject`] ? (
                                                 <span className="text-danger">
@@ -226,20 +266,15 @@ function SingleCA() {
                                     </div>
                                     <div className="col-sm-4">
                                         <div className="form-group">
-                                            <select
+                                            <Select
                                                 name="term"
-                                                className="form-control"
-                                                onChange={handleFormDataChange}
-                                            >
-                                                <option>Select Term</option>
-                                                {schoolTerm.map((item) => {
-                                                    return (
-                                                        <option value={item.id} key={item.id}>
-                                                            {item.term_name}
-                                                        </option>
-                                                    );
-                                                })}
-                                            </select>
+                                                options={termOptions}
+                                                isClearable={true}
+                                                isSearchable={true}
+                                                isDisabled={false}
+                                                isLoading={false}
+                                                onChange={(e) => handleSelect2Input("term", e)}
+                                            />
                                             {validationErrors &&
                                                 validationErrors[`term`] ? (
                                                 <span className="text-danger">
@@ -254,20 +289,15 @@ function SingleCA() {
                                 <div className="row">
                                     <div className="col-sm-4">
                                         <div className="form-group">
-                                            <select
+                                            <Select
                                                 name="year"
-                                                className="form-control"
-                                                onChange={handleFormDataChange}
-                                            >
-                                                <option>Select Year</option>
-                                                {schoolYears.map((item) => {
-                                                    return (
-                                                        <option value={item.id} key={item.id}>
-                                                            {item.academic_name}
-                                                        </option>
-                                                    );
-                                                })}
-                                            </select>
+                                                options={yearOptions}
+                                                isClearable={true}
+                                                isSearchable={true}
+                                                isDisabled={false}
+                                                isLoading={false}
+                                                onChange={(e) => handleSelect2Input("year", e)}
+                                            />
                                             {validationErrors &&
                                                 validationErrors[`year`] ? (
                                                 <span className="text-danger">
@@ -280,20 +310,15 @@ function SingleCA() {
                                     </div>
                                     <div className="col-sm-4">
                                         <div className="form-group">
-                                            <select
+                                            <Select
                                                 name="class"
-                                                className="form-control"
-                                                onChange={handleFormDataChange}
-                                            >
-                                                <option>Select Class</option>
-                                                {all_class.map((item) => {
-                                                    return (
-                                                        <option value={item.id} key={item.id}>
-                                                            {item.class_name}
-                                                        </option>
-                                                    );
-                                                })}
-                                            </select>
+                                                options={classOptions}
+                                                isClearable={true}
+                                                isSearchable={true}
+                                                isDisabled={false}
+                                                isLoading={false}
+                                                onChange={(e) => handleSelect2Input("class", e)}
+                                            />
                                             {validationErrors &&
                                                 validationErrors[`class`] ? (
                                                 <span className="text-danger">
@@ -306,20 +331,17 @@ function SingleCA() {
                                     </div>
                                     <div className="col-sm-4">
                                         <div className="form-group">
-                                            <select
+                                            <Select
                                                 name="school_category"
-                                                className="form-control"
-                                                onChange={handleFormDataChange}
-                                            >
-                                                <option>Select School</option>
-                                                {sch_category.map((item) => {
-                                                    return (
-                                                        <option value={item.id} key={item.id}>
-                                                            {item.sc_name}
-                                                        </option>
-                                                    );
-                                                })}
-                                            </select>
+                                                options={categoryOptions}
+                                                isClearable={true}
+                                                isSearchable={true}
+                                                isDisabled={false}
+                                                isLoading={false}
+                                                onChange={(e) =>
+                                                    handleSelect2Input("school_category", e)
+                                                }
+                                            />
                                             {validationErrors &&
                                                 validationErrors[`school_category`] ? (
                                                 <span className="text-danger">
@@ -334,7 +356,7 @@ function SingleCA() {
                             </div>
                             <table
                                 id="example1"
-                                className="table table-bordered table-striped table-responsive"
+                                className="table table-bordered table-striped"
                             >
                                 <thead>
                                     <tr>
@@ -416,9 +438,6 @@ function SingleCA() {
                                     disabled={isLoading}
                                     onClick={(e) => onSubmit(e)}
                                 >
-                                    {isLoading && (
-                                        <span className="spinner-border spinner-border-sm mr-1"></span>
-                                    )}
                                     Proceed
                                 </button>
                             </div>

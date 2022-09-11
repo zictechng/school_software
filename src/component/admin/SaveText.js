@@ -1,99 +1,204 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
+import Select from "react-select";
 
 function SaveText() {
-
     const [all_class, setAllClass] = useState([]);
     const [isLoading, setIsloading] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [state_detail, setStateDetails] = useState([]);
+    const [all_class_detail, setAllClassDetails] = useState([]);
 
-    const style = { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
+    const style = {
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+    };
     //decl all variable here
-    const [save_textInput, setSaveTextInput] = useState({
+    const [all_content, setAllContent] = useState({
+        state: "",
+        class: "",
+    });
+    const handleMultipleSelected = (e) => {
+        setAllContent({ ...all_content, [e.target.name]: e.target.value });
+    };
 
-        state: '',
-        class_apply: '',
-        message: '',
-        email_address: '',
-        attach_file: '',
+    const [save_textInput, setSaveTextInput] = useState({
+        message: "",
+        email_address: "",
+        attach_file: "",
         error_list: [],
     });
+
+    // useEffect()
     // declare input handling function here
     const handleInput = (e) => {
         e.persist();
-        setSaveTextInput({ ...save_textInput, [e.target.name]: e.target.value })
-    }
+        setSaveTextInput({ ...save_textInput, [e.target.name]: e.target.value });
+    };
 
     const submitMessage = (e) => {
         e.preventDefault();
         setIsloading(true);
+        console.log(all_content);
+
         const data = {
-            state: save_textInput.state,
-            class_apply: save_textInput.class_apply,
             message: save_textInput.message,
+            class:
+                all_content.class !== ""
+                    ? all_content.class.join(", ")
+                    : all_content.class,
+            state:
+                all_content.state !== ""
+                    ? all_content.state.join(", ")
+                    : all_content.state,
             email_address: save_textInput.email_address,
             attach_file: save_textInput.attach_file,
-        }
-        console.log(save_textInput.class_apply);
+        };
+        // console.log(save_textInput.class);
+
         try {
             // let create the api url here
-            axios.post(`/api/save_text`, data).then(res => {
-
-                if (res.data.status === 200) {
-                    // successful message
-                    toast.success(res.data.message, { theme: 'colored' });
-                    setSaveTextInput({
-                        ...save_textInput,
-                        state: '',
-                        class_apply: '',
-                        message: '',
-                        email_address: '',
-                        attach_file: '',
-                    });
-                    e.target.reset();
-                }
-                // record already exist
-                else if (res.data.status === 402) {
-                    toast.error(res.data.message, { theme: 'colored' });
-                }
-                // data input required
-                else if (res.data.status === 422) {
-                    toast.error('Missing Data Required', { theme: 'colored' });
-                    setSaveTextInput({ ...save_textInput, error_list: res.data.errors });
-                }
-                // error record not save
-                else if (res.data.status === 500) {
-                    toast.warning('Missing Data Required', { position: 'top-center', theme: 'colored' });
-                    setSaveTextInput({ ...save_textInput, error_list: res.data.errors });
-                }
-                // login required
-                else if (res.data.status === 401) {
-                    toast.error(res.data.message, { theme: 'colored' });
-                }
-                else {
-                    toast.error("sorry, something went wrong! Try again.", { theme: 'colored' });
-                }
-                setIsloading(false);
-            });
-
+            axios
+                .post(`/api/textSave`, data)
+                .then((res) => {
+                    if (res.data.status === 200) {
+                        // successful message
+                        toast.success(res.data.message, { theme: "colored" });
+                        setSaveTextInput({
+                            ...save_textInput,
+                            message: "",
+                            email_address: "",
+                            class: "",
+                            attach_file: "",
+                        });
+                        e.target.reset();
+                    }
+                    // record already exist
+                    else if (res.data.status === 402) {
+                        toast.error(res.data.message, { theme: "colored" });
+                    }
+                    // data input required
+                    else if (res.data.status === 422) {
+                        toast.error("Missing Data Required", { theme: "colored" });
+                        setSaveTextInput({
+                            ...save_textInput,
+                            error_list: res.data.errors,
+                        });
+                    }
+                    // error record not save
+                    else if (res.data.status === 500) {
+                        toast.warning("Missing Data Required", {
+                            position: "top-center",
+                            theme: "colored",
+                        });
+                        setSaveTextInput({
+                            ...save_textInput,
+                            error_list: res.data.errors,
+                        });
+                    }
+                    // login required
+                    else if (res.data.status === 401) {
+                        toast.error(res.data.message, { theme: "colored" });
+                    } else {
+                        toast.error("sorry, something went wrong! Try again.", {
+                            theme: "colored",
+                        });
+                    }
+                    setIsloading(false);
+                });
         } catch (error) {
             // Handle the error
-            toast.error("sorry, server error! Try again. ".error, { theme: 'colored' });
+            toast.error("sorry, server error! Try again. ".error, {
+                theme: "colored",
+            });
             setIsloading(false);
         }
-
-    }
+    };
     // create a function to fetch class data here
     useEffect(() => {
-        axios.get(`/api/fetch_all_details`).then(res => {
+        axios.get(`/api/fetch_all_details`).then((res) => {
             if (res.data.status === 200) {
                 setAllClass(res.data.allDetails.class_details);
             }
             setLoading(false);
         });
     }, []);
+
+
+    // create a function to fetch class data here
+    useEffect(() => {
+        axios.get(`/api/fetch_state`).then((res) => {
+            if (res.data.status === 200) {
+                //setClassDetails(res.data.allsDetails.all_class);
+                setStateDetails(res.data.allsDetails.all_state);
+                setAllClassDetails(res.data.allsDetails.all_class);
+                //console.log(res.data.allsDetails.all_state);
+            }
+        });
+    }, []);
+
+    //console.log(allstate_detail);
+
+    const options = [
+        { value: "Abia", label: "Abia" },
+        { value: "Adamawa", label: "Adamawa" },
+        { value: "AkwaIbom", label: "AkwaIbom" },
+        { value: "Anambra", label: "Anambra" },
+        { value: "Bauchi", label: "Bauchi" },
+        { value: "Bayelsa", label: "Bayelsa" },
+        { value: "Benue", label: "Benue" },
+        { value: "Borno", label: "Borno" },
+        { value: "CrossRivers", label: "CrossRivers" },
+        { value: "Delta", label: "Delta" },
+        { value: "Ebonyi", label: "Ebonyi" },
+        { value: "Edo", label: "Edo" },
+        { value: "Ekiti", label: "Ekiti" },
+        { value: "Enugu", label: "Enugu" },
+        { value: "Gombe", label: "Gombe" },
+        { value: "Imo", label: "Imo" },
+        { value: "Jigawa", label: "Jigawa" },
+        { value: "Kaduna", label: "Kaduna" },
+        { value: "Kano", label: "Kano" },
+        { value: "Katsina", label: "Katsina" },
+        { value: "Kebbi", label: "Kebbi" },
+        { value: "Kogi", label: "Kogi" },
+        { value: "Kwara", label: "Kwara" },
+        { value: "Lagos", label: "Lagos" },
+        { value: "Nasarawa", label: "Nasarawa" },
+        { value: "Niger", label: "Niger" },
+        { value: "Ogun", label: "Ogun" },
+        { value: "Ondo", label: "Ondo" },
+        { value: "Osun", label: "Osun" },
+        { value: "Oyo", label: "Oyo" },
+        { value: "Plateau", label: "Plateau" },
+        { value: "Rivers", label: "Rivers" },
+        { value: "Sokoto", label: "Sokoto" },
+        { value: "Taraba", label: "Taraba" },
+        { value: "Yobe", label: "Yobe" },
+        { value: "Zamfara", label: "Zamfara" },
+        { value: "Other", label: "Other" },
+    ];
+    const classOptions = [];
+    all_class.map((term) => {
+        classOptions.push({ value: term.id, label: term.class_name });
+    });
+    const stateOption = [];
+
+    state_detail.map((term) => {
+        stateOption.push({ value: term.id, label: term.state_details });
+    })
+    function handleSelect2Input(stateName, e) {
+        // console.log(stateName, e);
+        let a = [];
+        e.forEach((v, i) => a.push(v.value));
+        setAllContent({ ...all_content, [stateName]: a });
+    }
+    // an array with multiple objects
+
 
     if (loading) {
         return (
@@ -115,78 +220,123 @@ function SaveText() {
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-
-                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
-                                <li className='mr-3'><Link to='/admin/add-student'><button type="button" className="btn btn-block btn-info btn-sm">Text Message</button></Link> </li>
+                                <li className="mr-3">
+                                    <Link to="/admin/index">
+                                        <button
+                                            type="button"
+                                            className="btn btn-block btn-dark btn-sm"
+                                        >
+                                            <i className="fa fa-home"></i>{" "}
+                                        </button>
+                                    </Link>
+                                </li>
+                                <li className="mr-3">
+                                    <Link to="/admin/add-student">
+                                        <button
+                                            type="button"
+                                            className="btn btn-block btn-info btn-sm"
+                                        >
+                                            Text Message
+                                        </button>
+                                    </Link>{" "}
+                                </li>
                             </ol>
                         </div>
                     </div>
+
 
                     <div className="card table-responsive">
                         <div className="card-header">
                             <h3 className="card-title">Send text message</h3>
                         </div>
                         {/* /.card-header */}
-                        <div className="card-body">
-                            <div className='text-center'>
-
+                        {/* <div className='overlay text-center'>
+                            <div className="spinner-border spinner-border text-info" role="status">
                             </div>
+                        </div> */}
+                        {isLoading && <div className='overlay text-center'>
+                            <div className="spinner-border spinner-border text-info" role="status">
+                            </div>
+                        </div>}
+
+                        <div className="card-body">
+                            <div className="text-center"></div>
                             <form onSubmit={submitMessage}>
                                 <div className="card-body">
                                     <div className="form-group">
                                         <label htmlFor="exampleInputEmail1">Email address</label>
-                                        <input type="email" name='email_address' onChange={handleInput} value={save_textInput.email_address} className="form-control" id="exampleInputEmail1" placeholder="Enter email" />
-                                        <span className='text-danger'>{save_textInput.error_list.email_address}</span>
+                                        <input
+                                            type="email"
+                                            name="email_address"
+                                            onChange={handleInput}
+                                            value={save_textInput.email_address}
+                                            className="form-control"
+                                            id="exampleInputEmail1"
+                                            placeholder="Enter email"
+                                        />
+                                        <span className="text-danger">
+                                            {save_textInput.error_list.email_address}
+                                        </span>
                                     </div>
 
                                     <div className="form-group">
                                         <label htmlFor="exampleInputPassword1">State</label>
-                                        <select name='state' className="form-control select2" onChange={handleInput} value={save_textInput.state} style={{ width: '100%' }}>
-                                            <option>Select</option>
-                                            <option value='Abia'>Abia</option>
-                                            <option value='Adamawa'>Adamawa</option>
-                                            <option value='AkwaIbom'>AkwaIbom</option>
-                                            <option value='Anambra'>Anambra</option>
-                                            <option value='Bauchi'>Bauchi</option>
-                                            <option value='Bayelsa'>Bayelsa</option>
-                                            <option value='Benue'>Benue</option>
-                                            <option value='Borno'>Borno</option>
-                                            <option value='CrossRivers'>CrossRivers</option>
-                                            <option value='Delta'>Delta</option>
-                                            <option value='Ebonyi'>Ebonyi</option>
-                                            <option value='Edo'>Edo</option>
-                                            <option value='Ekiti'>Ekiti</option>
-                                            <option value='Enugu'>Enugu</option>
-                                            <option value='Gombe'>Gombe</option>
-                                            <option value='Imo'>Imo</option>
-                                            <option value='Jigawa'>Jigawa</option>
-                                            <option value='Kaduna'>Kaduna</option>
-                                            <option value='Kano'>Kano</option>
-                                            <option value='Katsina'>Katsina</option>
-                                            <option value='Kebbi'>Kebbi</option>
-                                            <option value='Kogi'>Kogi</option>
-                                            <option value='Kwara'>Kwara</option>
-                                            <option value='Lagos'>Lagos</option>
-                                            <option value='Nasarawa'>Nasarawa</option>
-                                            <option value='Niger'>Niger</option>
-                                            <option value='Ogun'>Ogun</option>
-                                            <option value='Ondo'>Ondo</option>
-                                            <option value='Osun'>Osun</option>
-                                            <option value='Oyo'>Oyo</option>
-                                            <option value='Plateau'>Plateau</option>
-                                            <option value='Rivers'>Rivers</option>
-                                            <option value='Sokoto'>Sokoto</option>
-                                            <option value='Taraba'>Taraba</option>
-                                            <option value='Yobe'>Yobe</option>
-                                            <option value='Zamfara'>Zamafara</option>
-                                            <option value='Others'>Others</option>
-                                        </select>
-                                        <span className='text-danger'>{save_textInput.error_list.state}</span>
+                                        <Select
+                                            name="state"
+                                            options={options}
+                                            isMulti
+                                            isClearable={true}
+                                            isSearchable={true}
+                                            isDisabled={false}
+                                            isLoading={false}
+                                            onChange={(e) => handleSelect2Input("state", e)}
+                                        />
+                                        <span className="text-danger">
+                                            {save_textInput.error_list.state}
+                                        </span>
                                     </div>
 
                                     <div className="form-group">
                                         <label>Class</label>
-                                        <select name='class_apply' onChange={handleInput} value={save_textInput.class_apply} className="form-control select2">
+                                        <Select
+                                            name="class"
+                                            options={classOptions}
+                                            isMulti
+                                            isClearable={true}
+                                            isSearchable={true}
+                                            isDisabled={false}
+                                            isLoading={false}
+                                            onChange={(e) => handleSelect2Input("class", e)}
+                                        />
+                                        <span className="text-danger">
+                                            {save_textInput.error_list.class}
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <label>Write Message</label>
+                                        <textarea
+                                            name="message"
+                                            onChange={handleInput}
+                                            value={save_textInput.message}
+                                            className="form-control"
+                                            placeholder="Message Here..."
+                                        ></textarea>
+                                        <span className="text-danger">
+                                            {save_textInput.error_list.message}
+                                        </span>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Inserted State</label>
+                                        <Select
+                                            name="state_name"
+                                            options={stateOption}
+                                            isClearable={true}
+                                            isSearchable={true}
+                                            isDisabled={false}
+                                            onChange={(e) => handleSelect2Input("state_name", e)}
+                                        />
+                                        {/* <select name='class_apply' onChange={handleInput} value={save_textInput.class_apply} className="form-control select2">
                                             <option>Select</option>
                                             {
                                                 all_class.map((item) => {
@@ -195,16 +345,41 @@ function SaveText() {
                                                     )
                                                 })
                                             }
-                                        </select>
-                                        <span className='text-danger'>{save_textInput.error_list.class_apply}</span>
-                                    </div>
-
-                                    <div>
-                                        <label>Write Message</label>
-                                        <textarea name='message' onChange={handleInput} value={save_textInput.message} className="form-control" placeholder="Message Here..."></textarea>
-                                        <span className='text-danger'>{save_textInput.error_list.message}</span>
+                                        </select> */}
+                                        <span className="text-danger">
+                                            {save_textInput.error_list.state_name}
+                                        </span>
                                     </div>
                                     <div className="form-group">
+                                        <label>Inserted State</label>
+                                        <select name='class_apply' className="form-control">
+                                            <option>Select</option>
+                                            {
+                                                state_detail.map((item) => {
+                                                    return (
+                                                        <option value={item.id} key={item.id}>{item.state_details}</option>
+                                                    )
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Inserted Class</label>
+                                        <select name='class_apply' className="form-control">
+                                            <option>Select</option>
+                                            {
+                                                all_class_detail.map((item) => {
+                                                    return (
+                                                        <option value={item.id} key={item.id}>{item.class_details}</option>
+                                                    )
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+
+
+                                    {/* <div className="form-group">
                                         <label htmlFor="exampleInputFile">Attached File</label>
                                         <div className="input-group">
                                             <div className="custom-file">
@@ -215,13 +390,15 @@ function SaveText() {
                                                 <span className="input-group-text">Upload</span>
                                             </div>
                                         </div>
-                                    </div>
-
+                                    </div> */}
                                 </div>
                                 {/* /.card-body */}
                                 <div className="card-footer">
-                                    <button type="submit" disabled={isLoading} className="btn btn-primary">
-                                        {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                    <button
+                                        type="submit"
+                                        disabled={isLoading}
+                                        className="btn btn-primary"
+                                    >
                                         Submit
                                     </button>
                                 </div>
@@ -274,7 +451,7 @@ function SaveText() {
                 </div>
             </div>
         </>
-    )
+    );
 }
 
-export default SaveText
+export default SaveText;

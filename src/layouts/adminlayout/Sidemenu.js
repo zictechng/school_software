@@ -1,7 +1,40 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import axios from "axios";
+
+import { UserContext } from '../../context/UserContext';
+import { useHistory } from 'react-router-dom';
 
 export default function Sidemenu() {
+    const history = useHistory();
+    const { loggin_check } = useContext(UserContext);
+
+    /* logout function goes here */
+    // const logoutSubmit = (e) => {
+    //     e.preventDefault();
+    //     setIsloading(true);
+    //     axios.post(`/api/logout`).then(res => {
+    //         /* check if logout is successful and clear all data store */
+    //         if (res.data.status === 200) {
+    //             localStorage.removeItem('auth_token');
+    //             localStorage.removeItem('auth_loggedID');
+    //             toast.success(res.data.message);
+    //             document.getElementById("logoutModal").classList.remove("show");
+    //             document.querySelectorAll(".modal-backdrop")
+    //                 .forEach(el => el.classList.remove("modal-backdrop"));
+    //             // history.push('/admin/dashboard');
+    //             history.push('../login');
+    //         }
+    //         else if (res.data.status === 401) {
+    //             toast.error(res.data.message);
+    //         }
+    //         setIsloading(false);
+    //     });
+
+    // }
+
+
     return (
         <>
             {/* Main Sidebar Container */}
@@ -9,7 +42,7 @@ export default function Sidemenu() {
                 {/* Brand Logo */}
                 <Link to="/admin/index" className="brand-link">
                     <img src="/../../../dist/img/AdminLTELogo.png" alt="Logo" className="brand-image img-circle elevation-3" style={{ opacity: '.8' }} />
-                    <span className="brand-text font-weight-light"><strong>Lift Soft</strong></span>
+                    <span className="brand-text font-weight-light"><strong>Lift Soft</strong> </span>
                 </Link>
                 {/* Sidebar */}
                 <div className="sidebar">
@@ -36,33 +69,10 @@ export default function Sidemenu() {
                                     </p>
                                 </Link>
                             </li>
-                            {/* <li className="nav-item">
-                                <Link to="/admin/profile" className="nav-link">
-                                    <i className="nav-icon far fa-image" />
-                                    <p>
-                                        Profile
-                                    </p>
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/admin/contact" className="nav-link">
-                                    <i className="nav-icon far fa-image" />
-                                    <p>
-                                        Contact
-                                    </p>
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to="/admin/index" className="nav-link">
-                                    <i className="nav-icon far fa-image" />
-                                    <p>
-                                        Home
-                                    </p>
-                                </Link>
-                            </li> */}
+
                             <li className="nav-header"><span className="badge badge-warning"> Data</span></li>
                             <li className="nav-item">
-                                <Link to="#" className="nav-link">
+                                <Link to="#" className="nav-link" role="button">
                                     <i className="nav-icon fas fa-th" />
                                     <p>
                                         Manage Data
@@ -142,7 +152,7 @@ export default function Sidemenu() {
                                     </li>
 
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/manage-upload" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Manage Upload </p>
                                         </Link>
@@ -168,38 +178,18 @@ export default function Sidemenu() {
                                             <p>Grade Class Position</p>
                                         </Link>
                                     </li>
-                                    <li className="nav-item">
+                                    {/* <li className="nav-item">
                                         <Link to="#" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Grade Subject Position</p>
                                         </Link>
-                                    </li>
+                                    </li> */}
                                     <li className="nav-item">
                                         <Link to="/admin/repair-result" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Repair Result</p>
                                         </Link>
                                     </li>
-                                    <li className="nav-item">
-                                        <Link to="/admin/repair-position" className="nav-link">
-                                            <i className="far fa-circle nav-icon" />
-                                            <p>Repair Class Position</p>
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link to="/admin/repair-subject" className="nav-link">
-                                            <i className="far fa-circle nav-icon" />
-                                            <p>Repair Subject</p>
-                                        </Link>
-                                    </li>
-
-                                    <li className="nav-item">
-                                        <Link to="/admin/trash-ca" className="nav-link">
-                                            <i className="far fa-circle nav-icon" />
-                                            <p>Trash CA/Result Details </p>
-                                        </Link>
-                                    </li>
-
                                 </ul>
                             </li>
                             <li className="nav-header"><span className="badge badge-warning"> Result Single Entry</span></li>
@@ -304,7 +294,7 @@ export default function Sidemenu() {
                                 </Link>
                                 <ul className="nav nav-treeview">
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/system-logs" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>System Log</p>
                                         </Link>
@@ -343,7 +333,6 @@ export default function Sidemenu() {
                                             <p>Lesson Plans </p>
                                         </Link>
                                     </li>
-
                                 </ul>
                             </li>
 
@@ -359,64 +348,70 @@ export default function Sidemenu() {
                                 </Link>
                                 <ul className="nav nav-treeview">
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/manage-promotion" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Manage Promotion</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/graduation" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Manage Graduation</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/attendance" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Manage Attendance</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/result-template" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Print Result Template</p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/time-table" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Time Table </p>
                                         </Link>
                                     </li>
 
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/broad-sheet" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Broad Sheet </p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/generate-pin" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Generate PIN </p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/assign-subject" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Assign Subject to Teacher </p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/assign-class" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Assign Class to Teacher </p>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/psychomotor" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Affective/Psychomotor Domain </p>
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link to="/admin/comments" className="nav-link">
+                                            <i className="far fa-circle nav-icon" />
+                                            <p>Comment</p>
                                         </Link>
                                     </li>
                                 </ul>
@@ -430,7 +425,10 @@ export default function Sidemenu() {
                             <hr />
                             <li className="nav-header"><span className="badge badge-info"> Action</span></li>
                             <li className="nav-item">
-                                <Link to="#" className="nav-link">
+                                <Link to="#"
+                                    data-toggle="modal"
+                                    data-target="#logoutModal"
+                                    className="nav-link">
                                     <i className="nav-icon ion ion-power text-red" />
                                     <p>
                                         Sign out

@@ -1,41 +1,50 @@
-
-import React, { useState, createContext } from "react";
-//import { toast } from "react-toastify";
+import React, { useState, createContext, useEffect } from "react";
+import { toast } from "react-toastify";
 //import { useHistory } from "react-router-dom";
+import axios from "axios";
 export const UserContext = createContext();
 
+localStorage.getItem("auth_loggedID");
+const userID = localStorage.getItem("auth_loggedID")
 export const UserProvider = props => {
-    // const history = useHistory();
-    //const user_email = localStorage.getItem('auth_email');
-    //const [users, setUsers] = useState([""]);
-    const [user_details, setUserDetails] = useState({});
-    const [logged_status, setLoggedStatus] = useState(false);
-    const [photo_status, setPhtotStatus] = useState([]);
 
-    const [result_class, setResultClass] = useState([]);
-    const [result_subject, setResultsubject] = useState([]);
+    const [user_details, setUserDetails] = useState([]);
+    const [logged_status, setLoggedStatus] = useState([]);
+    const [logged_check, setLoggedCheck] = useState(false);
+    const [count_message, setCount_message] = useState([]);
+    const [my_photo, setMyPhoto] = useState([]);
 
-    //const [loading, setloading] = useState(true);
+    const [user_loggin_state, setUserLogginState] = useState([]);
 
+    useEffect(() => {
+        const getLoggedInUser = async () => {
+            const userID = localStorage.getItem("auth_loggedID");
+            try {
+                if (!userID) return;
+                const res = await axios.get(`/api/check_loggin_user/${userID}`);
+                setUserDetails(res.data.loggStatus.logginUser);
+                setLoggedStatus(res.data.loggStatus.checkUserLoggin);
+                setCount_message(res.data.loggStatus.myMessage);
+                setLoggedCheck(true);
+                //setLoggedStatus(true);
+            } catch (error) {
+                // Handle the error
+                toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
+            }
+        };
+        getLoggedInUser();
+    }, []);
     // useEffect(() => {
-    //     const getLoggedInUser = async () => {
-    //         try {
-    //             const email = localStorage.getItem("auth_email");
-    //             if (!email) return;
-
-    //             const res = await axios.get(`/api/load_user/${email}`);
-    //             setUserDetails(res.data.userDetails);
-    //             setLoggedStatus(true);
-    //         } catch (error) {
-    //             // Handle the error
+    //     //get message status here;
+    //     axios.get(`/api/fetch_my_profile`).then(res => {
+    //         if (res.data.status === 200) {
+    //             setCount_message(res.data.get_mymessage);
     //         }
-    //     };
-    //     getLoggedInUser();
-    // }, [])
-
+    //     });
+    // }, []);
 
     return (
-        <UserContext.Provider value={{ classResult: [result_class, setResultClass], subjectResult: [result_subject, setResultsubject] }}>
+        <UserContext.Provider value={{ user_image: [my_photo, setMyPhoto], message_count: [count_message, setCount_message], loggin_state: [user_loggin_state, setUserLogginState], loggin_check: [logged_status, setLoggedStatus], user: [user_details, setUserDetails], checkLoggin: [logged_check, setLoggedCheck] }}>
             {props.children}
         </UserContext.Provider>
 

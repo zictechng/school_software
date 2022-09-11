@@ -161,7 +161,7 @@ function EnterCA() {
             <div>
                 <table
                     id="example1"
-                    className="table table-bordered table-striped table-responsive sm"
+                    className="table table-bordered table-striped sm"
                 >
                     <thead>
                         <tr>
@@ -268,6 +268,13 @@ function EnterCA() {
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
                                 <li className="mr-3">
+                                    <Link to="/admin/ca-result"><button
+                                        type="button"
+                                        className="btn btn-block btn-info btn-sm" data-tip="View Result" data-place="bottom">
+                                        View CA Result
+                                    </button></Link>
+                                </li>
+                                <li className="mr-3">
                                     <Link to="/admin/index">
                                         <button
                                             type="button"
@@ -277,13 +284,7 @@ function EnterCA() {
                                         </button>
                                     </Link>
                                 </li>
-                                <li className="mr-3">
-                                    <Link to="/admin/ca-result"><button
-                                        type="button"
-                                        className="btn btn-block btn-info btn-sm" data-tip="View Result" data-place="bottom">
-                                        View CA Result
-                                    </button></Link>
-                                </li>
+
                             </ol>
                         </div>
                     </div>
@@ -293,6 +294,10 @@ function EnterCA() {
                             <h3 className="card-title">Processing CA result details</h3>
                         </div>
                         {/* /.card-header */}
+                        {isLoading && <div className='overlay text-center'>
+                            <div className="spinner-border spinner-border text-info" role="status">
+                            </div>
+                        </div>}
                         <div className="card-body">
                             <div className="text-center"></div>
                             <form onSubmit={submitStaff}>
@@ -364,9 +369,9 @@ function EnterCA() {
                                         : (
                                             <div className="modal-footer">
                                                 <button disabled={isLoading} className="btn btn-success">
-                                                    {isLoading && (
+                                                    {/* {isLoading && (
                                                         <span className="spinner-border spinner-border-sm mr-1"></span>
-                                                    )}
+                                                    )} */}
                                                     Proceed
                                                 </button>
                                             </div>

@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { UserContext } from '../../context/UserContext';
 function Login() {
 
     document.title = "Login ";
     const history = useHistory();
 
-    //const value = useContext(UserContext);
+    //const [user, setUser] = useState({});
+    const { user, loggin_state, checkLoggin, loggin_check } = useContext(UserContext);
+    const [user_details, setUserDetails] = user;
+    const [user_loggin_state, setUserLogginState] = loggin_state;
+    const [logged_check, setLoggedCheck] = checkLoggin;
+    const [logged_status, setLoggedStatus] = loggin_check;
 
-    const [isLoggedIn, setisLoggedIn] = useState(null);
     const [loginInput, setLogin] = useState({
         /* declear veriable */
         email: '',
@@ -37,23 +42,28 @@ function Login() {
         axios.get('/sanctum/csrf-cookie').then(response => {
             axios.post(`/api/login`, data).then(res => {
                 if (res.data.status === 200) {
-                    localStorage.setItem('auth_token', res.data.token);
-                    localStorage.setItem('auth_name', res.data.username);
-                    localStorage.setItem('auth_email', res.data.email);
-                    toast.success(res.data.message);
+                    localStorage.setItem('auth_token', res.data.loginState.token);
+                    localStorage.setItem('auth_loggedID', res.data.loginState.logged_id);
+                    setUserDetails(res.data.loginState.userDetails);
+                    setUserLogginState(res.data.loginState.loggedUID);
+                    setLoggedStatus(res.data.loginState.loggedUID);
+
+                    toast.success(res.data.loginState.message, { theme: 'colored' });
+
                     //swal("Success!", res.data.message, "success");
-                    if (res.data.role === 'User') {
+                    if (res.data.loginState.role === 'Admin') {
                         history.push('/admin/index');
                     }
-                    else if (res.data.role === 'Admin') {
-                        history.push('/admin/admin');
+                    else if (res.data.loginState.role === 'Teacher') {
+                        history.push('/staff/index');
                     }
                     else {
                         toast.warning("Sorry! Permission not found");
                     }
+                    //setLoggedStatus(res.data.logged_id);
                 }
                 else if (res.data.status === 401) {
-                    toast.warning("Sorry! " + res.data.message);
+                    toast.warning("Sorry! " + res.data.loginState.message);
                     //swal("Warning!", res.data.message, "warning");
                     setIsLoading(false);
                 }
@@ -71,6 +81,7 @@ function Login() {
         });
 
     }
+
     return (
         <>
             <div className="hold-transition login-page">

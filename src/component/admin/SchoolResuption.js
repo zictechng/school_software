@@ -143,7 +143,6 @@ function SchoolResuption() {
         });
     }
 
-
     // get academic term on button click here 
     const editSchoolCategory = (id) => {
         setIsClassloading(true);
@@ -151,8 +150,6 @@ function SchoolResuption() {
         axios.get(`/api/get_resumption/${id}`).then(res => {
             if (res.data.status === 200) {
                 setSchoolResumptionEdit(res.data.sDetails);
-                console.log(res.data.sDetails);
-
             }
             // login required
             else if (res.data.status === 401) {
@@ -164,7 +161,6 @@ function SchoolResuption() {
             setIsClassloading(false);
         });
     }
-
 
     // create a function to fetch all data here
     const getSchoolCategory = (e) => {
@@ -316,7 +312,10 @@ function SchoolResuption() {
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="Addschool_resumption" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
 
                         <form onSubmit={submitCategory} className="form-horizontal">
@@ -415,12 +414,13 @@ function SchoolResuption() {
 
             {/* Edit modal goes here... */}
 
-
             <div className="modal fade" data-backdrop="false" role="dialog" id="editSchoolCategory_modal" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
-
                         <form onSubmit={submitSchoolCategoryUpdate} className="form-horizontal">
                             <div className="modal-header bg-dark">
                                 <h4 className="modal-title" id="modal-title">Edit school resumption</h4>
@@ -500,7 +500,6 @@ function SchoolResuption() {
                                     </div>
                                 </div>
                             </div>
-
                             <input type="hidden" name='id_name' onChange={handleInput} value={schoolResumptionEditInput.id} className="form-control" placeholder="ID" />
                             <div className="modal-footer">
                                 <button className="btn btn-danger" data-dismiss="modal">Cancel</button>
@@ -509,7 +508,6 @@ function SchoolResuption() {
                                     Update
                                 </button>
                             </div>
-
                         </form>
                     </div>
                 </div>

@@ -323,7 +323,10 @@ function SchoolopenDays() {
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="AddSchool_category" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
                         <form onSubmit={submitDaysOpen} className="form-horizontal">
                             <div className="modal-header bg-dark">
@@ -404,7 +407,10 @@ function SchoolopenDays() {
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="edit_day_modal" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
                         <form onSubmit={submitOpenUpdate} className="form-horizontal">
                             <div className="modal-header bg-dark">
@@ -482,4 +488,4 @@ function SchoolopenDays() {
     )
 }
 
-export default SchoolopenDays
+export default SchoolopenDays;

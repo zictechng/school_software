@@ -281,7 +281,10 @@ function CurrentSession() {
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="Addcurrent_session" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
                         <form onSubmit={submitCurrentSession} className="form-horizontal">
                             <div className="modal-header bg-dark">
@@ -318,7 +321,7 @@ function CurrentSession() {
                             <div className="modal-footer">
                                 <button className="btn btn-danger" data-dismiss="modal">Cancel</button>
                                 <button disabled={isLoading} className="btn btn-success">
-                                    {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                    {/* {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>} */}
                                     Add
                                 </button>
                             </div>
@@ -331,7 +334,10 @@ function CurrentSession() {
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="editSession_modal" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
                         <form onSubmit={submitCurrentUpdate} className="form-horizontal">
                             <div className="modal-header bg-dark">
@@ -365,13 +371,13 @@ function CurrentSession() {
                                         </div>
 
                                     </div>
-                                    <input type="text" name='id_name' onChange={handleEdit} value={editcurrent_sessionInput.id} className="form-control" placeholder="ID" />
+                                    <input type="hidden" name='id_name' onChange={handleEdit} value={editcurrent_sessionInput.id} className="form-control" placeholder="ID" />
                                 </div>
                             </div>
                             <div className="modal-footer">
                                 <button className="btn btn-danger" data-dismiss="modal">Cancel</button>
                                 <button disabled={isLoading} className="btn btn-success">
-                                    {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                    {/* {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>} */}
                                     Update
                                 </button>
                             </div>

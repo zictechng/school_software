@@ -3,6 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Modal, Button } from 'react-bootstrap';
 import ReactTooltip from 'react-tooltip';
+import Select from "react-select";
 import axios from 'axios';
 
 function CAResult() {
@@ -19,6 +20,7 @@ function CAResult() {
     const [all_subjects, setAllSubjects] = useState([]);
 
     const [sch_category, setSchCatgory] = useState([]);
+    const [all_category, setCatogory] = useState([]);
 
     const [fetch_result, setFetchResult] = useState({});
     const [list_error, setListError] = useState([]);
@@ -147,7 +149,8 @@ function CAResult() {
                 setAllSubjects(res.data.allDetails.subject_details);
                 setSchoolTerm(res.data.allDetails.term_details);
                 setSchoolYear(res.data.allDetails.session_details);
-                setSchCatgory(res.data.allDetails.sch_category_details)
+                setSchCatgory(res.data.allDetails.sch_category_details);
+                setCatogory(res.data.allDetails.sch_category_details)
             }
         });
     }, []);
@@ -198,6 +201,37 @@ function CAResult() {
     //         </div>
     //     )
     // }
+
+    // CODE FOR SELECT 2
+    const termOptions = [];
+    schoolTerm.map((term) => {
+        termOptions.push({ value: term.id, label: term.term_name });
+    });
+
+    const yearOptions = [];
+    schoolYears.map((term) => {
+        yearOptions.push({ value: term.id, label: term.academic_name });
+    });
+
+    const categoryOptions = [];
+    all_category.map((term) => {
+        categoryOptions.push({ value: term.id, label: term.sc_name });
+    });
+
+    const classOptions = [];
+    all_class.map((term) => {
+        classOptions.push({ value: term.id, label: term.class_name });
+    });
+
+    const subjectOptions = [];
+    all_subjects.map((term) => {
+        subjectOptions.push({ value: term.id, label: term.subject_name });
+    });
+
+    function handleSelect2Input(stateName, selectedItem) {
+        setCAResultInput({ ...add_resultInput, [stateName]: selectedItem.value });
+    }
+
     var table_record = "";
     if (result_details.length > 0) {
         table_record = <div>
@@ -233,7 +267,7 @@ function CAResult() {
                                 <td> <span className="badge bg-danger mr-2" type="button"><i onClick={() => deleteDetails(item.id)} className="fa fa-trash-o text-white"></i></span>
                                     {" "} {" "}
 
-                                    <Link to="#" data-tip="Add New Result" data-place="bottom"><span className='badge bg-info' type='button'><i className='fa fa-eye text-white'></i></span></Link>
+                                    <Link to={`view-ca/${item.tid_code}`} data-tip="View CA Result Details " data-place="bottom"><span className='badge bg-info' type='button'><i className='fa fa-eye text-white'></i></span></Link>
                                 </td>
                             </tr>
                         )
@@ -261,10 +295,10 @@ function CAResult() {
 
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm" data-tip="Dashboard" data-place="bottom"><i className='fa fa-home'></i> </button></Link></li>
                                 <li className='mr-3'>
                                     <button type="button" className="btn btn-block btn-info btn-sm" data-toggle="modal" data-target="#Addschool_resumption" data-tip="Add New CA Result" data-place="bottom">Add CA Result</button>
                                 </li>
+                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm" data-tip="Dashboard" data-place="bottom"><i className='fa fa-home'></i> </button></Link></li>
                             </ol>
                         </div>
                     </div>
@@ -291,118 +325,129 @@ function CAResult() {
 
                         <form onSubmit={submitStaff} className="form-horizontal">
                             <div className="modal-header bg-dark">
-                                <h4 className="modal-title" id="modal-title">Select Items to Proceed</h4>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <h4 className="modal-title" id="modal-title">
+                                    Select Items to Proceed
+                                </h4>
+                                <button
+                                    type="button"
+                                    className="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close"
+                                >
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
 
                             <div className="modal-body">
-
                                 <div className="card-body">
-                                    <br />
+
                                     <div className="row">
                                         <div className="col-sm-6">
                                             {/* text input */}
                                             <div className="form-group">
                                                 <label>Academic Term</label>
-                                                <select name='school_term' className='form-control' onChange={handleInput} value={add_resultInput.school_term}>
-                                                    <option>Select Term</option>
-                                                    {
-                                                        schoolTerm.map((item) => {
-                                                            return (
-                                                                <option value={item.id} key={item.id}>{item.term_name}</option>
-                                                            )
-                                                        })
-                                                    }
-                                                </select>
-                                                <small className='text-danger'>{list_error.school_term}</small>
-
+                                                <Select
+                                                    name="school_term"
+                                                    options={termOptions}
+                                                    isClearable={true}
+                                                    isSearchable={true}
+                                                    isDisabled={false}
+                                                    isLoading={false}
+                                                    onChange={(e) => handleSelect2Input("school_term", e)}
+                                                />
+                                                <span className="text-danger">
+                                                    {list_error.school_term}
+                                                </span>
                                             </div>
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="form-group">
                                                 <label>Academic Session</label>
-                                                <select name='school_year' className='form-control' onChange={handleInput} value={add_resultInput.school_year}>
-                                                    <option>Select Session</option>
-                                                    {
-                                                        schoolYears.map((item) => {
-                                                            return (
-                                                                <option value={item.id} key={item.id}>{item.academic_name}</option>
-                                                            )
-                                                        })
-                                                    }
-                                                </select>
-                                                <small className='text-danger'>{list_error.school_year}</small>
-
+                                                <Select
+                                                    name="school_year"
+                                                    options={yearOptions}
+                                                    isClearable={true}
+                                                    isSearchable={true}
+                                                    isDisabled={false}
+                                                    isLoading={false}
+                                                    onChange={(e) => handleSelect2Input("school_year", e)}
+                                                />
+                                                <span className="text-danger">
+                                                    {list_error.school_year}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-
                                     <div className="row">
                                         <div className="col-sm-6">
                                             {/* text input */}
                                             <div className="form-group">
                                                 <label>School Category</label>
-                                                <select name='school_type' className='form-control' onChange={handleInput} value={add_resultInput.school_type}>
-                                                    <option>Select Category</option>
-                                                    {
-                                                        sch_category.map((item) => {
-                                                            return (
-                                                                <option value={item.id} key={item.id}>{item.sc_name}</option>
-                                                            )
-                                                        })
+                                                <Select
+                                                    name="school_type"
+                                                    options={categoryOptions}
+                                                    isClearable={true}
+                                                    isSearchable={true}
+                                                    isDisabled={false}
+                                                    isLoading={false}
+                                                    onChange={(e) =>
+                                                        handleSelect2Input("school_type", e)
                                                     }
-                                                </select>
-                                                <small className='text-danger'>{list_error.school_type}</small>
-
+                                                />
+                                                <span className="text-danger">
+                                                    {list_error.school_type}
+                                                </span>
                                             </div>
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="form-group">
                                                 <label>Class</label>
-                                                <select name='class' className='form-control' onChange={handleInput} value={add_resultInput.class}>
-                                                    <option>Select Class</option>
-                                                    {
-                                                        all_class.map((item) => {
-                                                            return (
-                                                                <option value={item.id} key={item.id}>{item.class_name}</option>
-                                                            )
-                                                        })
-                                                    }
-                                                </select>
-                                                <small className='text-danger'>{list_error.class}</small>
+                                                <Select
+                                                    name="class"
+                                                    options={classOptions}
+                                                    isClearable={true}
+                                                    isSearchable={true}
+                                                    isDisabled={false}
+                                                    isLoading={false}
+                                                    onChange={(e) => handleSelect2Input("class", e)}
+                                                />
+                                                <span className="text-danger">
+                                                    {list_error.class}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-
                                     <div className="row">
-                                        <div className="col-sm-9">
+                                        <div className="col-sm-6">
                                             {/* text input */}
                                             <div className="form-group">
                                                 <label>Subject</label>
-                                                <select name='subject' className='form-control' onChange={handleInput} value={add_resultInput.subject}>
-                                                    <option>Select Subject</option>
-                                                    {
-                                                        all_subjects.map((item) => {
-                                                            return (
-                                                                <option value={item.id} key={item.id}>{item.subject_name}</option>
-                                                            )
-                                                        })
-                                                    }
-                                                </select>
-                                                <small className='text-danger'>{list_error.subject}</small>
+                                                <Select
+                                                    name="subject"
+                                                    options={subjectOptions}
+                                                    isClearable={true}
+                                                    isSearchable={true}
+                                                    isDisabled={false}
+                                                    isLoading={false}
+                                                    onChange={(e) => handleSelect2Input("subject", e)}
+                                                />
+                                                <span className="text-danger">
+                                                    {list_error.subject}
+                                                </span>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
 
                             <div className="modal-footer">
-                                <button className="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                <button className="btn btn-danger" data-dismiss="modal">
+                                    Cancel
+                                </button>
                                 <button disabled={isLoading} className="btn btn-success">
-                                    {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                    {isLoading && (
+                                        <span className="spinner-border spinner-border-sm mr-1"></span>
+                                    )}
                                     Proceed
                                 </button>
                             </div>

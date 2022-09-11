@@ -22,7 +22,7 @@ function ViewResult() {
     const [sch_category, setSchCatgory] = useState([]);
 
     const { classResult, subjectResult } = useContext(UserContext);
-    const [result_class, setResultClass] = classResult;
+
 
     //decl all variable here
     const [view_class, setViewClass] = useState({
@@ -65,7 +65,7 @@ function ViewResult() {
                     //setResultClass(data);
                     view_code = localStorage.setItem('classCode', res.data.view_code);
                     console.log(view_code);
-                    setResultClass(res.data.view_code);
+                    //setResultClass(res.data.view_code);
 
                     e.target.reset();
                     history.push('/admin/result-view');

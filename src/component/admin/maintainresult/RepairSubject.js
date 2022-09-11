@@ -41,4 +41,4 @@ function RepairSubject() {
     )
 }
 
-export default RepairSubject
+export default RepairSubject;

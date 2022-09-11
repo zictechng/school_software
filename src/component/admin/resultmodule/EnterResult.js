@@ -1,9 +1,9 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
 import ReactTooltip from 'react-tooltip';
 import { toast } from "react-toastify";
+import axios from "axios";
 
 function EnterResult() {
   document.title = "Enter Result | ";
@@ -24,7 +24,7 @@ function EnterResult() {
   const t_code = useRef("");
   const school_category = useRef("");
 
-  const submitStaff = (e) => {
+  const submitEnterResult = (e) => {
     e.preventDefault();
     setIsloading(true);
 
@@ -49,9 +49,10 @@ function EnterResult() {
             toast.success(res.data.message, {
               theme: "colored",
             });
-
+            localStorage.setItem("Rtid", res.data.resultAll.tID.tid_code);
+            //console.log(res.data.resultAll.tID.tid_code);
             e.target.reset();
-            history.push('/admin/result');
+            history.push('/admin/view-position');
           }
           else if (res.data.status === 403) {
             toast.error(res.data.message, {
@@ -83,8 +84,6 @@ function EnterResult() {
         if (res.data.status === 200) {
           setGetDetails(res.data.all_details.student_result);
           setGetStartDetails(res.data.all_details.start_item);
-
-
           // Populate data
           const resultData = [];
           res.data.all_details.student_result.map((item) => {
@@ -99,8 +98,31 @@ function EnterResult() {
           });
           setResultData(resultData);
         }
+        // fetch with student details
+        else if (res.data.status === 201) {
+          setGetDetails(res.data.all_details.student_result);
+          setGetStartDetails(res.data.all_details.start_item);
+          //console.log(res.data.all_details.student_result)
+          // Populate data
+          const resultData = [];
+          res.data.all_details.student_result.map((item) => {
+            resultData.push({
+              st_admin_id: item.st_admin_number,
+              other_name: item.other_name,
+              ca1: "",
+              ca2: "",
+              exam_score: "",
+              total: "",
+            });
+          });
+          setResultData(resultData);
+        }
         // login required
         else if (res.data.status === 401) {
+          toast.error(res.data.message, { theme: "colored" });
+        }
+        // login required
+        else if (res.data.status === 500) {
           toast.error(res.data.message, { theme: "colored" });
         } else {
           toast.error("sorry, something went wrong! Try again.", {
@@ -126,7 +148,7 @@ function EnterResult() {
   }, []);
 
   const handleOnChange = (e, index) => {
-    if (["ca1_score", "ca2_score"].includes(e.target.name)) {
+    if (["ca1", "ca2"].includes(e.target.name)) {
       if (e.target.value > 20)
         return toast.error("CA score not more than 20", {
           theme: "colored",
@@ -164,7 +186,7 @@ function EnterResult() {
       <div>
         <table
           id="example1"
-          className="table table-bordered table-striped table-responsive"
+          className="table table-bordered table-striped"
         >
           <thead>
             <tr>
@@ -291,6 +313,13 @@ function EnterResult() {
             <div className="col-sm-6">
               <ol className="breadcrumb float-sm-right">
                 <li className="mr-3">
+                  <Link to="/admin/result"><button
+                    type="button"
+                    className="btn btn-block btn-info btn-sm" data-tip="View Result" data-place="bottom">
+                    Result
+                  </button></Link>
+                </li>
+                <li className="mr-3">
                   <Link to="/admin/index">
                     <button
                       type="button"
@@ -300,25 +329,23 @@ function EnterResult() {
                     </button>
                   </Link>
                 </li>
-                <li className="mr-3">
-                  <Link to="/admin/result"><button
-                    type="button"
-                    className="btn btn-block btn-info btn-sm" data-tip="View Result" data-place="bottom">
-                    Result
-                  </button></Link>
-                </li>
+
               </ol>
             </div>
           </div>
 
           <div className="card table-responsive">
             <div className="card-header">
-              <h3 className="card-title">Processing form A details</h3>
+              <h3 className="card-title">Enter student result details and save</h3>
             </div>
             {/* /.card-header */}
+            {isLoading && <div className='overlay text-center'>
+              <div className="spinner-border spinner-border text-info" role="status">
+              </div>
+            </div>}
             <div className="card-body">
               <div className="text-center"></div>
-              <form onSubmit={submitStaff}>
+              <form onSubmit={submitEnterResult}>
                 <input
                   type="hidden"
                   name="t_code"
@@ -387,9 +414,9 @@ function EnterResult() {
                     : (
                       <div className="modal-footer">
                         <button disabled={isLoading} className="btn btn-success">
-                          {isLoading && (
+                          {/* {isLoading && (
                             <span className="spinner-border spinner-border-sm mr-1"></span>
-                          )}
+                          )} */}
                           Proceed
                         </button>
                       </div>
@@ -402,7 +429,7 @@ function EnterResult() {
       </div>
       <ReactTooltip />
     </>
-  );
+  )
 }
 
 export default EnterResult;

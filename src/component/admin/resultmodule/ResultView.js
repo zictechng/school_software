@@ -9,7 +9,7 @@ import axios from 'axios';
 function ResultView() {
     document.title = "View Result Details | ";
     const { classResult } = useContext(UserContext);
-    const [result_class] = classResult;
+    // const [result_class] = classResult;
 
     const [result_info, setResultInfo] = useState([]);
     const [loading, setLoading] = useState(true);

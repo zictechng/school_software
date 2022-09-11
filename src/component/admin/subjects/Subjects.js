@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Modal, Button } from 'react-bootstrap';
 
 function Subjects() {
     document.title = "Add Subject | ";
@@ -141,6 +142,15 @@ function Subjects() {
             setIsClassloading(false);
         });
     }
+    useEffect(() => {
+        // call the function here
+        getSubject();
+
+        return () => {
+
+        };
+    }, []);
+
     const editSubject = (id) => {
         setIsEditloading(true);
         // let create the api url here
@@ -158,40 +168,48 @@ function Subjects() {
             setIsEditloading(false);
         });
     }
-
-    useEffect(() => {
-        // call the function here
-        getSubject();
-
-        return () => {
-
-        };
-    }, []);
-
     // edit function here..
     // const editSubject = (e, id) =>{
 
     // }
 
-
     // delete operation here
-    const deleteSubject = (e, id) => {
+    const deleteSubjectDetails = (e, delete_id) => {
         e.preventDefault();
         const thisClicked = e.currentTarget;
         thisClicked.innerHTML = "<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span><span class='sr-only'></span>";
         /* send axios request to delete the record from the database here */
-        axios.delete(`/api/delete_subject/${id}`).then(res => {
-            if (res.data.status === 200) {
-                toast.success(res.data.message, { theme: 'colored' });
-                thisClicked.closest("tr").remove();
-            }
-            else if (res.data.status === 402) {
-                toast.warning(res.data.message, { theme: 'colored' });
-                thisClicked.innerHTML = "<i className='fa fa-trash-o'></i>";
-            }
-        })
+        try {
+            axios.delete(`/api/delete_subject_details/${delete_id}`).then(res => {
+                if (res.data.status === 200) {
+                    toast.success(res.data.message, { theme: 'colored' });
+                }
+                else if (res.data.status === 402) {
+                    toast.warning(res.data.message, { theme: 'colored' });
+                    thisClicked.innerHTML = "<i className='fa fa-trash-o'></i>";
+                }
+            });
+            setDeleteDetails(false);
+            getSubject();
+        }
+        catch (error) {
+            // Handle the error
+            toast.error("sorry, server error occurred! Try again. ".error, {
+                theme: "colored",
+            });
+        }
     }
-
+    // delete scratch card modal here
+    const [delete_id, setDeleteID] = useState("");
+    const [deleteDetails, setDeleteDetails] = useState(false);
+    // action modal here...
+    const handleDeleteClose = () => {
+        setDeleteDetails(false)
+    }
+    const deleteAction = (delete_id) => {
+        setDeleteID(delete_id);
+        setDeleteDetails(true);
+    }
     /* create veriable to hold the result data */
 
     var table_record = "";
@@ -217,7 +235,7 @@ function Subjects() {
                                 <td>{item.sub_addedby}</td>
                                 <td>{item.sub_status}</td>
                                 <td>{item.sub_date}</td>
-                                <td> <span className='badge bg-danger mr-2'><i onClick={(e) => deleteSubject(e, item.id)} className='fa fa-trash-o text-white' type='button'></i></span>
+                                <td> <span className='badge bg-danger mr-2'><i onClick={() => deleteAction(item.id)} className='fa fa-trash-o text-white' type='button'></i></span>
                                     {" "} {" "}
                                     <span className='badge bg-primary'><i onClick={() => editSubject(item.id)} className='fa fa-pencil text-white' type='button' data-toggle="modal" data-target="#Editsubject_modal"></i></span>
                                 </td>
@@ -271,7 +289,10 @@ function Subjects() {
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="Addschool_subject" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
                         <form onSubmit={submitSubject} className="form-horizontal">
                             <div className="modal-header bg-dark">
@@ -317,7 +338,10 @@ function Subjects() {
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="Editsubject_modal" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
                         <form onSubmit={submitSubjectUpdate} className="form-horizontal">
                             <div className="modal-header bg-dark">
@@ -358,6 +382,23 @@ function Subjects() {
                     </div>
                 </div>
             </div>
+
+            <Modal show={deleteDetails} >
+                <Modal.Header style={{ background: 'orange', color: 'white' }}>
+                    <Modal.Title>Caution</Modal.Title>
+                </Modal.Header>
+                <Modal.Body><h5>Are you sure you want to delete this ?</h5>
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" size="sm" onClick={handleDeleteClose}>
+                        Close
+                    </Button>
+                    <Button variant="info" size="sm" onClick={(e) => deleteSubjectDetails(e, delete_id)}>
+                        Yes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     )
 }

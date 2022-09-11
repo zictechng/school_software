@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 function SchoolCategory() {
 
@@ -137,16 +137,15 @@ function SchoolCategory() {
             setIsClassloading(false);
         });
     }
-
-
     // create a function to fetch all data here
     const getSchoolCategory = (e) => {
         setIsFetchloading(true);
         // let create the api url here
-        axios.get(`/api/fetch_all_category`).then(res => {
+        axios.get(`/api/fetch_category`).then(res => {
             if (res.data.status === 200) {
+
                 setSchoolCategory(res.data.category_record);
-                //console.log(res.data.history_record);
+                console.log(res.data.history_record);
             }
             // login required
             else if (res.data.status === 401) {
@@ -161,10 +160,6 @@ function SchoolCategory() {
     useEffect(() => {
         // call the function here
         getSchoolCategory();
-
-        return () => {
-
-        };
     }, []);
 
     // delete operation here
@@ -241,7 +236,6 @@ function SchoolCategory() {
                             </ol>
                         </div>
                     </div>
-
                     <div className="card table-responsive">
                         <div className="card-header">
                             <h3 className="card-title">Current academic school category details</h3>
@@ -254,14 +248,16 @@ function SchoolCategory() {
 
                             {table_record}
                         </div>
-
                     </div>
                 </div>
             </div>
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="AddSchool_category" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
                         <form onSubmit={submitCategory} className="form-horizontal">
                             <div className="modal-header bg-dark">
@@ -293,7 +289,7 @@ function SchoolCategory() {
                             <div className="modal-footer">
                                 <button className="btn btn-danger" data-dismiss="modal">Cancel</button>
                                 <button disabled={isLoading} className="btn btn-success">
-                                    {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                    {/* {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>} */}
                                     Add
                                 </button>
                             </div>
@@ -307,7 +303,10 @@ function SchoolCategory() {
 
             <div className="modal fade" data-backdrop="false" role="dialog" id="editSchoolCategory_modal" aria-labelledby="modal-title">
                 <div className="modal-dialog" role="document">
-
+                    {isLoading && <div className='overlay text-center'>
+                        <div className="spinner-border spinner-border text-info" role="status">
+                        </div>
+                    </div>}
                     <div className="modal-content">
                         <form onSubmit={submitSchoolCategoryUpdate} className="form-horizontal">
                             <div className="modal-header bg-dark">
@@ -336,7 +335,7 @@ function SchoolCategory() {
                             <div className="modal-footer">
                                 <button className="btn btn-danger" data-dismiss="modal">Cancel</button>
                                 <button disabled={isLoading} className="btn btn-success">
-                                    {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                    {/* {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>} */}
                                     Update
                                 </button>
                             </div>
@@ -348,4 +347,4 @@ function SchoolCategory() {
     )
 }
 
-export default SchoolCategory
+export default SchoolCategory;

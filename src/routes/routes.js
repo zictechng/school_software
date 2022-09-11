@@ -1,4 +1,3 @@
-
 import Profile from '../component/admin/Profile';
 import Contact from '../component/admin/Contact';
 import Dashboardpage from '../component/admin/dashboard/Dashboardpage';
@@ -23,6 +22,7 @@ import AdminUsers from '../component/admin/staffdata/AdminUsers';
 import AddAdminUser from '../component/admin/staffdata/AddAdminUser';
 import EditAdmin from '../component/admin/staffdata/EditAdmin';
 import AddResult from '../component/admin/resultmodule/AddResult';
+import AddResult3 from '../component/admin/resultmodule/AddResult3';
 import StudentResultProcess from '../component/admin/resultmodule/StudentResultProcess';
 import EnterResult from '../component/admin/resultmodule/EnterResult';
 import SingleResult from '../component/admin/resultmodule/SingleResult';
@@ -38,6 +38,44 @@ import RepairResult from '../component/admin/maintainresult/RepairResult';
 import RepairClassPosition from '../component/admin/maintainresult/RepairClassPosition';
 import RepairSubject from '../component/admin/maintainresult/RepairSubject';
 import TrashCAResult from '../component/admin/maintainresult/TrashCAResult';
+import RepairView from '../component/admin/maintainresult/RepairView';
+import RepairCAView from '../component/admin/maintainresult/RepairCAView';
+import GradeView from '../component/admin/maintainresult/GradeView';
+import SaveMultiple from '../component/admin/SaveMultiple';
+import ManagePromotion from '../component/admin/manage_extra/ManagePromotion';
+import PromotionView from '../component/admin/manage_extra/PromotionView';
+import PromotionReturned from '../component/admin/manage_extra/PromotionReturned';
+import Graduation from '../component/admin/manage_extra/Graduation';
+import GraduationView from '../component/admin/manage_extra/GraduationView';
+import Attendance from '../component/admin/manage_extra/Attendance';
+import AttendanceView from '../component/admin/manage_extra/AttendanceView';
+import ViewAttendance from '../component/admin/manage_extra/ViewAttendance';
+import ResultTemplate from '../component/admin/manage_extra/ResultTemplate';
+import TimeTable from '../component/admin/manage_extra/TimeTable';
+import Broadsheet from '../component/admin/manage_extra/Broadsheet';
+import GeneratePin from '../component/admin/manage_extra/GeneratePin';
+import ViewPin from '../component/admin/manage_extra/ViewPin';
+import AssignedSubject from '../component/admin/manage_extra/AssignedSubject';
+import ViewAssignSubject from '../component/admin/manage_extra/ViewAssignSubject';
+import AssignClass from '../component/admin/manage_extra/AssignClass';
+import ViewAssignClass from '../component/admin/manage_extra/ViewAssignClass';
+import PsychomotorDomain from '../component/admin/manage_extra/PsychomotorDomain';
+import EnterPsychomotorDomain from '../component/admin/manage_extra/EnterPsychomotorDomain';
+import ViewPsychomotorDomain from '../component/admin/manage_extra/ViewPsychomotorDomain';
+import SystemLog from '../component/SystemLog';
+import ManageUpload from '../component/admin/resultmodule/ManageUpload';
+import ManageUpload2 from '../component/admin/resultmodule/ManageUpload2';
+import PositionView from '../component/admin/maintainresult/PositionView';
+import PrincipleComment from '../component/admin/manage_extra/PrincipleComment';
+import EnterComment from '../component/admin/manage_extra/EnterComment';
+import ViewResultPosition from '../component/admin/resultmodule/ViewResultPosition';
+import ViewSubjects from '../component/admin/resultmodule/ViewSubjects';
+import ViewCommentDetails from '../component/admin/manage_extra/ViewCommentDetails';
+import ViewGradeDetails from '../component/admin/maintainresult/ViewGradeDetails';
+import ViewCADetails from '../component/admin/resultmodule/ViewCADetails';
+import TestCode from '../component/admin/TestCode';
+import ResultPrintPage from '../component/admin/resultmodule/ResultPrintPage';
+import SaveText1 from '../component/SaveTest1';
 
 
 const routes = [
@@ -82,6 +120,45 @@ const routes = [
     { path: '/admin/repair-position', exact: true, name: 'RepairClassPosition', component: RepairClassPosition },
     { path: '/admin/repair-subject', exact: true, name: 'RepairSubject', component: RepairSubject },
     { path: '/admin/trash-ca', exact: true, name: 'TrashCAResult', component: TrashCAResult },
+    { path: '/admin/repair-view', exact: true, name: 'RepairView', component: RepairView },
+    { path: '/admin/repair-ca', exact: true, name: 'RepairCAView', component: RepairCAView },
+    { path: '/admin/grade_view', exact: true, name: 'GradeView', component: GradeView },
+    { path: '/admin/result2', exact: true, name: 'AddResult3', component: AddResult3 },
+    { path: '/admin/save-multiple', exact: true, name: 'SaveMultiple', component: SaveMultiple },
+    { path: '/admin/manage-promotion', exact: true, name: 'ManagePromotion', component: ManagePromotion },
+    { path: '/admin/promotion-view', exact: true, name: 'PromotionView', component: PromotionView },
+    { path: '/admin/returned-promotion', exact: true, name: 'PromotionReturned', component: PromotionReturned },
+    { path: '/admin/graduation', exact: true, name: 'Graduation', component: Graduation },
+    { path: '/admin/graduation-view', exact: true, name: 'GraduationView', component: GraduationView },
+    { path: '/admin/attendance', exact: true, name: 'Attendance', component: Attendance },
+    { path: '/admin/attendance-view', exact: true, name: 'AttendanceView', component: AttendanceView },
+    { path: '/admin/view-attendance/:id', exact: true, name: 'ViewAttendance', component: ViewAttendance },
+    { path: '/admin/result-template', exact: true, name: 'ResultTemplate', component: ResultTemplate },
+    { path: '/admin/time-table', exact: true, name: 'TimeTable', component: TimeTable },
+    { path: '/admin/broad-sheet', exact: true, name: 'BroadSheet', component: Broadsheet },
+    { path: '/admin/generate-pin', exact: true, name: 'GeneratePin', component: GeneratePin },
+    { path: '/admin/view-pins/:id', exact: true, name: 'ViewPin', component: ViewPin },
+    { path: '/admin/assign-subject', exact: true, name: 'AssignedSubject', component: AssignedSubject },
+    { path: '/admin/view-assignsubjects/:id', exact: true, name: 'ViewAssignSubject', component: ViewAssignSubject },
+    { path: '/admin/assign-class', exact: true, name: 'AssignClass', component: AssignClass },
+    { path: '/admin/view-assignclass/:id', exact: true, name: 'ViewAssignClass', component: ViewAssignClass },
+    { path: '/admin/psychomotor', exact: true, name: 'PsychomotorDomain', component: PsychomotorDomain },
+    { path: '/admin/enter-psychomotor', exact: true, name: 'EnterPsychomotorDomain', component: EnterPsychomotorDomain },
+    { path: '/admin/view-psychomotor/:id', exact: true, name: 'ViewPsychomotorDomain', component: ViewPsychomotorDomain },
+    { path: '/admin/system-logs', exact: true, name: 'SystemLog', component: SystemLog },
+    { path: '/admin/manage-upload', exact: true, name: 'ManageUpload', component: ManageUpload },
+    { path: '/admin/manage-upload2', exact: true, name: 'ManageUpload2', component: ManageUpload2 },
+    { path: '/admin/position-view', exact: true, name: 'PositionView', component: PositionView },
+    { path: '/admin/comments', exact: true, name: 'PrincipleComment', component: PrincipleComment },
+    { path: '/admin/enter-comment', exact: true, name: 'EnterComment', component: EnterComment },
+    { path: '/admin/view-position', exact: true, name: 'ViewResultPosition', component: ViewResultPosition },
+    { path: '/admin/view-subjects/:id', exact: true, name: 'ViewSubjects', component: ViewSubjects },
+    { path: '/admin/view-comments/:id', exact: true, name: 'ViewCommentDetails', component: ViewCommentDetails },
+    { path: '/admin/view-grade/:id', exact: true, name: 'ViewGradeDetails', component: ViewGradeDetails },
+    { path: '/admin/view-ca/:id', exact: true, name: 'ViewCADetails', component: ViewCADetails },
+    { path: '/admin/text-code', exact: true, name: 'TestCode', component: TestCode },
+    { path: '/admin/print-sheet', exact: true, name: 'ResultPrintPage', component: ResultPrintPage },
+    { path: '/admin/save-test1', exact: true, name: 'SaveText1', component: SaveText1 },
 
 
 ]

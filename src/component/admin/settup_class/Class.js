@@ -1,7 +1,8 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Modal, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 function Class() {
 
@@ -129,20 +130,26 @@ function Class() {
     const getClass = (e) => {
         setIsloadClass(true);
         // let create the api url here
-        axios.get(`/api/fetch_class`).then(res => {
+        axios.get(`/api/fetch_class_details`).then(res => {
             if (res.data.status === 200) {
                 setClassdetails(res.data.class_record);
-                //console.log(res.data.history_record);
+                setIsloadClass(false);
             }
             // login required
             else if (res.data.status === 401) {
                 toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
+            }
+            // No record found
+            else if (res.data.status === 404) {
+                toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
+                setIsloadClass(false);
             }
             else {
                 toast.error("sorry, something went wrong! Try again.", { position: 'top-center', theme: 'colored' });
             }
             setIsloadClass(false);
         });
+        setIsloadClass(false);
     }
 
     // get class when edit button is clicked
@@ -174,23 +181,35 @@ function Class() {
     }, []);
 
     // delete operation here
-    const deleteClass = (e, id) => {
+    const deleteClass = (e, delete_id) => {
         e.preventDefault();
         const thisClicked = e.currentTarget;
         thisClicked.innerHTML = "<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span><span class='sr-only'></span>";
         /* send axios request to delete the record from the database here */
-        axios.delete(`/api/delete_class/${id}`).then(res => {
+        axios.delete(`/api/delete_class_id/${delete_id}`).then(res => {
             if (res.data.status === 200) {
                 toast.success(res.data.message, { theme: 'colored' });
-                thisClicked.closest("tr").remove();
+                thisClicked.innerHTML = ""
+                getClass();
             }
             else if (res.data.status === 402) {
                 toast.warning(res.data.message, { theme: 'colored' });
                 thisClicked.innerHTML = "<i className='fa fa-trash-o'></i>";
             }
+            setDeleteAllData(false);
         })
     }
+    // action activate all modal here...
+    const [delete_id, setDeleteID] = useState("");
+    const [delete_classData, setDeleteAllData] = useState(false);
 
+    const handleClassClose = () => {
+        setDeleteAllData(false)
+    }
+    const delete_classID = (id) => {
+        setDeleteID(id);
+        setDeleteAllData(true);
+    }
     /* create veriable to hold the result data */
 
     var table_record = "";
@@ -216,7 +235,7 @@ function Class() {
                                 <td>{item.added_by}</td>
                                 <td>{item.status}</td>
                                 <td>{item.record_date}</td>
-                                <td> <span className='badge bg-danger mr-2'><i onClick={(e) => deleteClass(e, item.id)} className='fa fa-trash-o text-white' type='button'></i></span>
+                                <td> <span className='badge bg-danger mr-2'><i onClick={(e) => delete_classID(item.id)} className='fa fa-trash-o text-white' type='button'></i></span>
                                     {" "} {" "}
                                     <span className='badge bg-primary'><i onClick={() => editClass(item.id)} className='fa fa-pencil text-white' type='button' data-toggle="modal" data-target="#Editclass_modal"></i></span>
                                 </td>
@@ -241,7 +260,7 @@ function Class() {
 
                     <div className="row mb-2">
                         <div className="col-sm-6">
-                            <h1 className="m-0">Manage Subject</h1>
+                            <h1 className="m-0">Manage Class</h1>
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
@@ -254,7 +273,7 @@ function Class() {
 
                     <div className="card table-responsive">
                         <div className="card-header">
-                            <h3 className="card-title">Current subject details</h3>
+                            <h3 className="card-title">Current class details</h3>
                         </div>
                         {/* /.card-header */}
                         <div className="card-body">
@@ -357,6 +376,22 @@ function Class() {
                     </div>
                 </div>
             </div>
+            <Modal show={delete_classData} >
+                <Modal.Header style={{ background: 'orange', color: 'white' }}>
+                    <Modal.Title>Caution</Modal.Title>
+                </Modal.Header>
+                <Modal.Body><h5>Are you sure you want to delete this ?</h5>
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" size="sm" onClick={handleClassClose}>
+                        Close
+                    </Button>
+                    <Button variant="info" size="sm" onClick={(e) => deleteClass(e, delete_id)}>
+                        Yes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     )
 }
