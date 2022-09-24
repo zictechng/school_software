@@ -8,32 +8,14 @@ import { useHistory } from 'react-router-dom';
 
 export default function Sidemenu() {
     const history = useHistory();
-    const { loggin_check } = useContext(UserContext);
+    const { loggin_check, schLogo, schBanner } = useContext(UserContext);
+    const [banner_school, setBannerSchool] = schBanner;
+    const [logo_school] = schLogo;
 
-    /* logout function goes here */
-    // const logoutSubmit = (e) => {
-    //     e.preventDefault();
-    //     setIsloading(true);
-    //     axios.post(`/api/logout`).then(res => {
-    //         /* check if logout is successful and clear all data store */
-    //         if (res.data.status === 200) {
-    //             localStorage.removeItem('auth_token');
-    //             localStorage.removeItem('auth_loggedID');
-    //             toast.success(res.data.message);
-    //             document.getElementById("logoutModal").classList.remove("show");
-    //             document.querySelectorAll(".modal-backdrop")
-    //                 .forEach(el => el.classList.remove("modal-backdrop"));
-    //             // history.push('/admin/dashboard');
-    //             history.push('../login');
-    //         }
-    //         else if (res.data.status === 401) {
-    //             toast.error(res.data.message);
-    //         }
-    //         setIsloading(false);
-    //     });
 
-    // }
-
+    // check if user have profile image and show it else, show default one.
+    const school_logo = (logo_school.sch_logo !== undefined && logo_school.sch_logo !== null) ?
+        (logo_school.uploadedImageLogo ? logo_school.sch_logo : window.BASE_URL + logo_school.sch_logo) : "No Image";
 
     return (
         <>
@@ -41,8 +23,10 @@ export default function Sidemenu() {
             <aside className="main-sidebar sidebar-dark-primary elevation-4">
                 {/* Brand Logo */}
                 <Link to="/admin/index" className="brand-link">
-                    <img src="/../../../dist/img/AdminLTELogo.png" alt="Logo" className="brand-image img-circle elevation-3" style={{ opacity: '.8' }} />
-                    <span className="brand-text font-weight-light"><strong>Lift Soft</strong> </span>
+                    {logo_school.sch_logo !== undefined && logo_school.sch_logo !== null ?
+                        <img className="img-account-profile mb-2" src={school_logo} alt="logo" width={80} height={80} style={{ opacity: '.8' }} /> : ""}
+
+                    <span className="brand-text font-weight-light"><strong>{logo_school.sch_name_short}</strong> </span>
                 </Link>
                 {/* Sidebar */}
                 <div className="sidebar">
@@ -133,7 +117,7 @@ export default function Sidemenu() {
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="#" className="nav-link">
+                                        <Link to="/admin/print-result" className="nav-link">
                                             <i className="far fa-circle nav-icon" />
                                             <p>Print Result</p>
                                         </Link>
@@ -416,10 +400,21 @@ export default function Sidemenu() {
                                     </li>
                                 </ul>
                             </li>
-                            <li className="nav-item">
+
+                            {/* <li className="nav-item">
                                 <Link to="/admin/save-text" className="nav-link">
                                     <i className="far fa-circle nav-icon" />
                                     <p>Save Text </p>
+                                </Link>
+                            </li> */}
+                            <li className="nav-item">
+                                <Link to="/admin/info-setup" className="nav-link">
+                                    <i className="nav-icon fas fa-cog" />
+                                    <p>
+                                        System Info Setup
+                                        <i className="fas fa-angle-left right" />
+
+                                    </p>
                                 </Link>
                             </li>
                             <hr />

@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { UserProvider } from './context/UserContext';
 
 window.companyName = "LiftSoft";
+window.BASE_URL = "http://localhost:8000/";
 //creating IP state
 
 ReactDOM.render(

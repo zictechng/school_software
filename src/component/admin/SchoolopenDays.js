@@ -1,7 +1,8 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import Pagination from 'react-js-pagination';
 
 function SchoolopenDays() {
 
@@ -15,6 +16,8 @@ function SchoolopenDays() {
 
     const [schoolYears, setSchoolYear] = useState([]);
     const [schoolTerm, setSchoolTerm] = useState([]);
+
+    const [isloading, setIs_Loading] = useState(false);
 
     const [school_openInput, setSchoolopenInput] = useState({
         days_open: '',
@@ -152,15 +155,20 @@ function SchoolopenDays() {
             setIsClassloading(false);
         });
     }
-
+    var PageNumber = 1;
     // create a function to fetch all data here
-    const getSchoolCategory = (e) => {
-        setIsFetchloading(true);
+    const getOpenDays = (PageNumber) => {
+        setIs_Loading(true);
         // let create the api url here
-        axios.get(`/api/fetch_all_open`).then(res => {
+        axios.get(`/api/fetch_all_open?page=${PageNumber}`).then(res => {
             if (res.data.status === 200) {
                 setSchoolCategory(res.data.category_record);
-                console.log(res.data.category_record);
+                setIs_Loading(false);
+            }
+            //data not found
+            else if (res.data.status === 404) {
+                toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
+                setIs_Loading(false);
             }
             // login required
             else if (res.data.status === 401) {
@@ -170,14 +178,13 @@ function SchoolopenDays() {
                 toast.error("sorry, something went wrong! Try again.", { position: 'top-center', theme: 'colored' });
             }
             setIsFetchloading(false);
+            setIs_Loading(false);
         });
     }
     useEffect(() => {
         // call the function here
-        getSchoolCategory();
-
+        getOpenDays();
         return () => {
-
         };
     }, []);
 
@@ -188,7 +195,7 @@ function SchoolopenDays() {
         axios.get(`/api/fetch_all`).then(res => {
             if (res.data.status === 200) {
                 setOpenDays(res.data.opend_record);
-                console.log(res.data.opend_record);
+                //console.log(res.data.opend_record);
             }
             // login required
             else if (res.data.status === 401) {
@@ -203,9 +210,7 @@ function SchoolopenDays() {
     useEffect(() => {
         // call the function here
         getAll_days();
-
         return () => {
-
         };
     }, []);
 
@@ -245,48 +250,81 @@ function SchoolopenDays() {
             }
         })
     }
+    // get page properties for pagination
+    const { data, current_page, per_page, total, from, to, last_page } = school_category
+    const p = {
+        color: "#97a3b9",
+        marginTop: "10px",
+    };
+    if (isfetchLoading) {
+        return (
+            <div className="card-body">
+                <div className='text-center'>
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
+                </div>
+            </div>
+        )
+    }
     var table_record = "";
-    if (school_category.length > 0) {
-        table_record = <div>
-            <table id="example1" className="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>No. Days</th>
-                        <th>Term</th>
-                        <th>Year</th>
-                        <th>Added By</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {school_category.map((item, i) => {
-                        return (
-                            <tr key={i}>
-                                <td>{i + 1}</td>
-                                <td>{item.days_open}</td>
-                                <td>{item.schoolterm.term_name}</td>
-                                <td>{item.schoolyear.academic_name}</td>
-                                <td>{item.open_addedby}</td>
-                                <td>{item.open_date}</td>
-                                <td> <span className='badge bg-danger mr-2' type='button'><i onClick={(e) => deleteOpen_day(e, item.id)} className='fa fa-trash-o text-white'></i></span>
-                                    {" "} {" "}
-                                    <span className='badge bg-primary' type='button'><i onClick={() => edit_open_day(item.id)} className='fa fa-pencil text-white' data-toggle="modal" data-target="#edit_day_modal"></i></span>
-                                </td>
-                            </tr>
-                        )
-                    })
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else if (school_category.length < 1) {
-        table_record = <div className='text-center'>
-            <p>No record at the moment</p>
-        </div>
-    }
+    // if (school_category.length > 0) {
+    table_record = <div>
+        <table id="example1" className="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>No. Days</th>
+                    <th>Term</th>
+                    <th>Year</th>
+                    <th>Added By</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {school_category.data.map((item, i) => {
+                    return (
+                        <tr key={i}>
+                            <td>{i + from}</td>
+                            <td>{item.days_open}</td>
+                            <td>{item.schoolterm.term_name}</td>
+                            <td>{item.schoolyear.academic_name}</td>
+                            <td>{item.open_addedby}</td>
+                            <td>{item.open_date}</td>
+                            <td> <span onClick={(e) => deleteOpen_day(e, item.id)} className='badge bg-danger mr-2' type='button'><i className='fa fa-trash-o text-white'></i></span>
+                                {" "} {" "}
+                                <span onClick={() => edit_open_day(item.id)} className='badge bg-primary' type='button'><i className='fa fa-pencil text-white' data-toggle="modal" data-target="#edit_day_modal"></i></span>
+                            </td>
+                        </tr>
+                    )
+                })
+                }
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content align-items-center mr-3">
+                <span className='mr-2'> </span>
+                <span className='mr-3' style={p}>{current_page} - {to} / {total}</span>
+                <Pagination
+                    activePage={current_page}
+                    totalItemsCount={total}
+                    itemsCountPerPage={per_page}
+                    onChange={(pageNumber) => getOpenDays(pageNumber)}
+                    renderOnZeroPageCount={null}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                    firstPageText="First"
+                    lastPageText="Last"
+                />
+            </ul>
+        </nav>
+    </div>
+    // }
+    // else if (school_category.length < 1) {
+    //     table_record = <div className='text-center'>
+    //         <p>No record at the moment</p>
+    //     </div>
+    // }
     return (
         <>
             <div className="content-header">
@@ -298,23 +336,35 @@ function SchoolopenDays() {
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-
-                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
                                 <li className='mr-3'><button type="button" className="btn btn-block btn-info btn-sm" data-toggle="modal" data-target="#AddSchool_category">Add Open Days</button></li>
+                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
+
                             </ol>
                         </div>
                     </div>
 
                     <div className="card table-responsive">
-                        <div className="card-header">
+                        <div className="card-header bg-dark">
                             <h3 className="card-title">Current number of days school opened details</h3>
+                            <div className="d-flex justify-content-between">
+                                <p></p>
+                                <span className="badge mr-2" type="button">
+                                    <input name='title' className='form-control form-control-sm' placeholder='Search...' />
+                                </span>
+                            </div>
                         </div>
                         {/* /.card-header */}
                         <div className="card-body">
-                            <div className='text-center'>
-                                {isfetchLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                            {isloading && <div className='overlay text-center'>
+                                <div className="spinner-border spinner-border text-info" role="status">
+                                </div>
+                            </div>}
+                            <div className="card table-responsive">
+                                {school_category.data.length ? table_record :
+                                    <div className='text-center'>
+                                        <p>No record at the moment</p>
+                                    </div>}
                             </div>
-                            {table_record}
                         </div>
 
                     </div>

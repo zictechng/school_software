@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 import { UserContext } from '../../../context/UserContext';
+import useReactIpLocation from "react-ip-details";
 const userID = localStorage.getItem('auth_loggedID');
 const token = localStorage.getItem('auth_token');
 
@@ -18,13 +19,15 @@ function Dashboardpage() {
     const todayDate = date.toDateString()
     const history = useHistory();
     //creating IP state
-    const [user_ip, setUserIP] = useState('');
-    const { loggin_check, loggin_state, user } = useContext(UserContext);
+    const { loggin_check, loggin_state, user, userip } = useContext(UserContext);
     const [logged_status] = loggin_check;
     const [user_loggin_state] = loggin_state;
     const [user_details] = user;
+    const [user_ip] = userip;
+    const [location_detector, setLocationDetector] = useState('');
 
     const [showModal, setShowModal] = useState(false);
+    const [ip, setIP] = useState('');
     const reload = () => window.location.reload();
     // show modal when the user login and stop after page reload.
     useEffect(() => {
@@ -34,7 +37,23 @@ function Dashboardpage() {
             //console.log("Dashboard Page UID, Active");
             setTimeout(() => setShowModal(true), 1000);
         }
+
     }, []);
+
+    useEffect(() => {
+        // fetch('https://ipapi.co/json/')
+        //     .then(function (response) {
+        //         response.json().then(jsonData => {
+        //             console.log(jsonData);
+        //         });
+        //     })
+        //     .catch(function (error) {
+        //         console.log(error)
+        //     });
+
+    }, []);
+
+
     const handleClose = () => {
         setShowModal(false)
         reload();
@@ -53,11 +72,11 @@ function Dashboardpage() {
                 <div className="container-fluid">
                     <div className="row mb-2">
                         <div className="col-sm-6">
-                            <h1 className="m-0">Staff Dashboard</h1>
+                            <h1 className="m-0">Staff Dashboard </h1>
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-                                <li><span className="badge badge-danger mr-3"> Last Login: {todayDate} {dateTime} | IP: 192.0.987.07</span></li>
+                                <li><span className="badge badge-danger mr-3"> Last Login: {todayDate} {dateTime} | IP: {user_ip !== undefined ? user_ip : "No IP"}</span></li>
                                 <li className='mr-3'><button type="button" className="btn btn-block btn-dark btn-sm">Visit Website</button></li>
                             </ol>
                         </div>

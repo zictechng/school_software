@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import { Link , useHistory} from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { toast } from "react-toastify";
 import axios from "axios";
 
 function Register() {
 
-    document.title = "Register "; // this will show the page title name
+    document.title = "Register | " + window.companyName; // this will show the page title name
     const history = useHistory();
     const [registerInput, setRegister] = useState({
         // declear all input veriable here 
@@ -74,14 +74,14 @@ function Register() {
                             <form onSubmit={registerUser}>
                                 <div className="input-group mb-3">
                                     <input type="text" name="fname" onChange={handleInput} value={registerInput.fname} className="form-control" placeholder="First name" />
-                                    
+
                                     <div className="input-group-append">
                                         <div className="input-group-text">
                                             <span className="fas fa-user" />
                                         </div>
                                     </div>
-                                 </div>
-                                 <span className='text-danger'>{registerInput.error_list.fname}</span>
+                                </div>
+                                <span className='text-danger'>{registerInput.error_list.fname}</span>
                                 <div className="input-group mb-3">
                                     <input type="text" name="lname" onChange={handleInput} value={registerInput.lname} className="form-control" placeholder="Last name" />
                                     <div className="input-group-append">
@@ -89,7 +89,7 @@ function Register() {
                                             <span className="fas fa-user" />
                                         </div>
                                     </div>
-                                 </div>
+                                </div>
                                 <span className='text-danger'>{registerInput.error_list.lname}</span>
 
                                 <div className="input-group mb-3">
@@ -99,8 +99,8 @@ function Register() {
                                             <span className="fas fa-envelope" />
                                         </div>
                                     </div>
-                                  </div>
-                                  <span className='text-danger'>{registerInput.error_list.email}</span>
+                                </div>
+                                <span className='text-danger'>{registerInput.error_list.email}</span>
 
                                 <div className="input-group mb-3">
                                     <input type="text" name="phone" onChange={handleInput} value={registerInput.phone} className="form-control" placeholder="Phone Number (+23480..)" />
@@ -109,8 +109,8 @@ function Register() {
                                             <span className="fas fa-phone" />
                                         </div>
                                     </div>
-                                 </div>
-                                 <span className='text-danger'>{registerInput.error_list.phone}</span>
+                                </div>
+                                <span className='text-danger'>{registerInput.error_list.phone}</span>
 
                                 <div className="input-group mb-3">
                                     <input type="password" name="password" onChange={handleInput} value={registerInput.password} className="form-control" placeholder="Password" />
@@ -119,8 +119,8 @@ function Register() {
                                             <span className="fas fa-lock" />
                                         </div>
                                     </div>
-                                   </div>
-                                   <span className='text-danger'>{registerInput.error_list.password}</span>
+                                </div>
+                                <span className='text-danger'>{registerInput.error_list.password}</span>
                                 {/* <div className="input-group mb-3">
                                     <input type="password" className="form-control" placeholder="Retype password" />
                                     <div className="input-group-append">
@@ -140,9 +140,9 @@ function Register() {
                                     </div>
                                     {/* /.col */}
                                     <div className="col-5">
-                                        <button type="submit" disabled={isLoading} className="btn btn-primary btn-block"> 
-                                        {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                                        Register
+                                        <button type="submit" disabled={isLoading} className="btn btn-primary btn-block">
+                                            {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                            Register
                                         </button>
                                     </div>
                                     {/* /.col */}

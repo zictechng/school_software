@@ -147,7 +147,7 @@ function ViewAssignSubject(props) {
     // create a function to fetch class data here
     useEffect(() => {
         setLoading(true);
-        axios.get(`/api/fetch_subject`).then(res => {
+        axios.get(`/api/get_all_subject`).then(res => {
             if (res.data.status === 200) {
                 setGetAllSubject(res.data.subject_record);
             }
@@ -321,18 +321,12 @@ function ViewAssignSubject(props) {
                                                                 {
                                                                     pin_status = <span className="badge bg-success">Active</span>
                                                                     buttonCheck =
-                                                                        <span className="badge bg-secondary mr-2" type="button" title='Edit Subject'>
-                                                                            <i
-                                                                                onClick={(e) => editSchoolCategory(item.id)}
-                                                                                className="fa fa-edit text-white"
-                                                                            ></i>
+                                                                        <span onClick={(e) => editSchoolCategory(item.id)} className="badge bg-secondary mr-2" type="button" title='Edit Subject'>
+                                                                            <i className="fa fa-edit text-white"></i>
                                                                         </span>
                                                                     delete_button =
-                                                                        <span className="badge bg-danger mr-2" type="button" title='Delete Subject'>
-                                                                            <i
-                                                                                onClick={(e) => delete_id(item.id)}
-                                                                                className="fa fa-trash text-white"
-                                                                            ></i>
+                                                                        <span onClick={(e) => delete_id(item.id)} className="badge bg-danger mr-2" type="button" title='Delete Subject'>
+                                                                            <i className="fa fa-trash text-white"></i>
                                                                         </span>
                                                                 }
                                                                 else if (item.sub_status == 'Deleted')// this mean product is active
@@ -346,18 +340,12 @@ function ViewAssignSubject(props) {
                                                                 else if (item.sub_status == 'Pending') {
                                                                     pin_status = <span className="badge bg-secondary">Pending</span>
                                                                     buttonCheck =
-                                                                        <span className="badge bg-info mr-2" type="button" title='Activate Subject'>
-                                                                            <i
-                                                                                onClick={(e) => editSchoolCategory(item.id)}
-                                                                                className="fa fa-check text-white"
-                                                                            ></i>
+                                                                        <span onClick={(e) => editSchoolCategory(item.id)} className="badge bg-info mr-2" type="button" title='Activate Subject'>
+                                                                            <i className="fa fa-check text-white"></i>
                                                                         </span>
                                                                     delete_button =
-                                                                        <span className="badge bg-danger mr-2" type="button" title='Delete Subject'>
-                                                                            <i
-                                                                                onClick={(e) => delete_id(item.id)}
-                                                                                className="fa fa-trash text-white"
-                                                                            ></i>
+                                                                        <span onClick={(e) => delete_id(item.id)} className="badge bg-danger mr-2" type="button" title='Delete Subject'>
+                                                                            <i className="fa fa-trash text-white"></i>
                                                                         </span>
                                                                 }
                                                                 return (

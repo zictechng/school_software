@@ -5,16 +5,18 @@ import { Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
 import Select from "react-select";
 import "../../style.css";
+import Pagination from 'react-js-pagination';
 
 
 function AssignClass() {
     const history = useHistory();
-    document.title = "Assigned Class | ";
+    document.title = "Assigned Class | " + window.companyName;
     const [isfetchLoading, setIsFetchloading] = useState(true);
-    const [get_pins, setGetPins] = useState([]);
+    const [assign_class, setGetPins] = useState([]);
     const [list_error, setListError] = useState([]);
     const [loading, setLoading] = useState(false);
     const [is_loading, setIsLoading] = useState(false);
+    const [isloading, setIs_Loading] = useState(false);
 
     const [all_class, setAllClass] = useState([]);
     const [validationErrors, setValidationErrors] = useState(null);
@@ -50,16 +52,21 @@ function AssignClass() {
 
         setRows([...rows]);
     };
+    var PageNumber = 1;
     // create a function to fetch all data here
     const getDetailsAssign = () => {
-        setIsLoading(true);
+        setIs_Loading(true);
         try {
             // let create the api url here
-            axios.get(`/api/get_assign_class`).then(res => {
+            axios.get(`/api/get_assign_class?page=${PageNumber}`).then(res => {
                 if (res.data.status === 200) {
                     setGetPins(res.data.resultAll);
-                    setIsLoading(false);
-                    setIsFetchloading(false);
+                    setIs_Loading(false);
+                }
+                //data not found
+                else if (res.data.status === 404) {
+                    toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
+                    setIs_Loading(false);
                 }
                 // login required
                 else if (res.data.status === 401) {
@@ -70,7 +77,7 @@ function AssignClass() {
                     toast.error("sorry, something went wrong! Try again.", { position: 'top-center', theme: 'colored' });
                 }
                 setIsFetchloading(false);
-                setIsLoading(false);
+                setIs_Loading(false);
             });
         } catch (error) {
             // Handle the error
@@ -157,83 +164,86 @@ function AssignClass() {
     function handleSelectInput(stateName, selectedItem) {
         setFormData({ ...formData, [stateName]: selectedItem.value });
     }
+    // get page properties for pagination
+    const { data, current_page, per_page, total, from, to, last_page } = assign_class
     const p = {
         color: "#97a3b9",
         marginTop: "10px",
     };
-    const overlay = {
-
-    }
     if (isfetchLoading) {
         return (
             <div className="card-body">
                 <div className='text-center'>
-                    <div className="spinner-grow spinner-grow text-info" role="status">
-                    </div> Loading
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
                 </div>
             </div>
         )
     }
     var table_record = "";
-    if (get_pins.length > 0) {
-        table_record = <div>
-            <div className="card-header">
-                <h3 className="card-title"><span className='text-danger'></span>
-                </h3>
-                <div className="d-flex justify-content-between">
-                    <p></p>
-                    <span className="badge bg-danger mr-2" type="button">
-                    </span>
-                </div>
-            </div>
-            <div className="card table-responsive">
-                <div className='text-center'>
-                    {is_loading && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                </div>
-                <table id="example1" className="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Teacher Name</th>
-                            <th>Total Subjects</th>
-                            <th>Batch ID</th>
-                            <th>Added By</th>
-                            <th>Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody style={{ textAlign: 'center' }}>
-                        {get_pins.map((item, i) => {
-                            return (
-                                <tr key={i}>
-                                    <td>{i + 1}</td>
-                                    <td>{item.cls__teacher_name}</td>
-                                    <td>
-                                        <Link to={`view-assignclass/${item.id}`}><span className='badge bg-info mr-2' type='button'> {item.total_class}</span></Link>
-                                        {/* <span className="badge bg-info mr-2" type="button">
+    // if (assign_class.length > 0) {
+    table_record = <div>
+        <table id="example1" className="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Teacher Name</th>
+                    <th>Total Subjects</th>
+                    <th>Batch ID</th>
+                    <th>Added By</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody style={{ textAlign: 'center' }}>
+                {assign_class.data.map((item, i) => {
+                    return (
+                        <tr key={i}>
+                            <td>{i + from}</td>
+                            <td>{item.cls__teacher_name}</td>
+                            <td>
+                                <Link to={`view-assignclass/${item.id}`}><span className='badge bg-info mr-2' type='button'> {item.total_class}</span></Link>
+                                {/* <span className="badge bg-info mr-2" type="button">
                                             {item.total_class}
                                         </span> */}
-                                    </td>
-                                    <td>{item.cls__tid}</td>
-                                    <td>{item.cls__addby}</td>
-                                    <td>{item.cls__date}</td>
-                                    <td>
-                                        <Link to={`view-assignclass/${item.id}`}><span className='badge bg-info mr-2' type='button'><i className='fa fa-eye text-white'></i></span></Link>
-                                    </td>
-                                </tr>
-                            )
-                        })
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    }
-    else {
-        table_record = <div className='text-center'>
-            <p style={p}> No record at the moment</p>
-        </div>
-    }
+                            </td>
+                            <td>{item.cls__tid}</td>
+                            <td>{item.cls__addby}</td>
+                            <td>{item.cls__date}</td>
+                            <td>
+                                <Link to={`view-assignclass/${item.id}`}><span className='badge bg-info mr-2' type='button'><i className='fa fa-eye text-white'></i></span></Link>
+                            </td>
+                        </tr>
+                    )
+                })
+                }
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content align-items-center mr-3">
+                <span className='mr-2'> </span>
+                <span className='mr-3' style={p}>{current_page} - {to} / {total}</span>
+                <Pagination
+                    activePage={current_page}
+                    totalItemsCount={total}
+                    itemsCountPerPage={per_page}
+                    onChange={(pageNumber) => getDetailsAssign(pageNumber)}
+                    renderOnZeroPageCount={null}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                    firstPageText="First"
+                    lastPageText="Last"
+                />
+            </ul>
+        </nav>
+    </div>
+    //     </div>
+    // }
+    // else {
+    //     table_record = <div className='text-center'>
+    //         <p style={p}> No record at the moment</p>
+    //     </div>
+    // }
     return (
         <>
 
@@ -259,12 +269,25 @@ function AssignClass() {
                     <div className="card table-responsive">
                         <div className="card-header bg-dark">
                             <h3 className="card-title"> Assigned class details </h3>
+                            <div className="d-flex justify-content-between">
+                                <p></p>
+                                <span className="badge mr-2" type="button">
+                                    <input name='title' className='form-control form-control-sm' placeholder='Search...' />
+                                </span>
+                            </div>
                         </div>
-                        <div className='text-center'>
-                            {is_loading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                        <div className="card-body">
+                            {isloading && <div className='overlay text-center'>
+                                <div className="spinner-border spinner-border text-info" role="status">
+                                </div>
+                            </div>}
+                            <div className="card table-responsive">
+                                {assign_class.data.length ? table_record :
+                                    <div className='text-center'>
+                                        <p>No record at the moment</p>
+                                    </div>}
+                            </div>
                         </div>
-
-                        {table_record}
                     </div>
                 </div>
             </div>

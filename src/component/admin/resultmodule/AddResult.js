@@ -5,15 +5,17 @@ import { Modal, Button } from 'react-bootstrap';
 import ReactTooltip from 'react-tooltip';
 import Select from "react-select";
 import axios from 'axios';
+import Pagination from 'react-js-pagination';
 
 function AddResult() {
     const history = useHistory();
-    document.title = "Manage Result | ";
+    document.title = "Manage Result | " + window.companyName;
     const [result_details, setResultDetails] = useState([]);
     const [result_ID, setResultID] = useState('');
 
-    const [isfetchLoading, setIsFetchloading] = useState(false);
+    const [isfetchLoading, setIsFetchloading] = useState(true);
     const [isLoading, setIsloading] = useState(false);
+    const [is_loading, setIs_Loading] = useState(false);
 
     const [schoolYears, setSchoolYear] = useState([]);
     const [schoolTerm, setSchoolTerm] = useState([]);
@@ -108,16 +110,23 @@ function AddResult() {
         }
 
     }
+    var PageNumber = 1;
+
     // create a function to fetch all data here
-    const getAllResult = () => {
+    const getAllResult = (PageNumber) => {
+        setIs_Loading(true)
         try {
-            setIsFetchloading(true);
             // let create the api url here
-            axios.get(`/api/fetch_result`).then(res => {
+            axios.get(`/api/fetch_result?page=${PageNumber}`).then(res => {
                 if (res.data.status === 200) {
                     //setResultDetails(res.data.allResultPost.allPostResult);
                     setResultID(res.data.allResultPost.result_ID)
                     setResultDetails(res.data.allResultPost.allPostResult);
+                    setIs_Loading(false);
+                }
+                // No record found at the moment
+                else if (res.data.status === 404) {
+                    toast.error(res.data.message, { theme: 'colored' });
                 }
                 // login required
                 else if (res.data.status === 401) {
@@ -127,11 +136,13 @@ function AddResult() {
                     toast.error("sorry, something went wrong! Try again.", { position: 'top-center', theme: 'colored' });
                 }
                 setIsFetchloading(false);
-                //setLoading(false);
+                setIs_Loading(false);
             });
         } catch (error) {
             // Handle the error
             toast.error("sorry, server error! Try again. ".error, { theme: 'colored' });
+            setIsFetchloading(false);
+            setIs_Loading(false);
         }
     }
     useEffect(() => {
@@ -245,58 +256,90 @@ function AddResult() {
     function handleSelect2Input(stateName, selectedItem) {
         setAddResultInput({ ...add_resultInput, [stateName]: selectedItem.value });
     }
-
+    // get page properties for pagination
+    const { data, current_page, per_page, total, from, to, last_page } = result_details
+    const p = {
+        color: "#97a3b9",
+        marginTop: "10px",
+    };
+    if (isfetchLoading) {
+        return (
+            <div className="card-body">
+                <div className='text-center'>
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
+                </div>
+            </div>
+        )
+    }
     var table_record = "";
-    if (result_details.length > 0) {
-        table_record = <div>
-            <table id="example1" className="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>TID</th>
-                        <th>Academic Year</th>
-                        <th>Academic Term</th>
-                        <th>Sch. Category</th>
-                        <th>Class</th>
-                        <th>Subject</th>
-                        <th>Added By</th>
-                        <th>Reg. Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {result_details.map((item, i) => {
-                        return (
-                            <tr key={i}>
-                                <td>{i + 1}</td>
+    // if (result_details.length > 0) {
+    table_record = <div>
+        <table id="example1" className="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>TID</th>
+                    <th>Academic Year</th>
+                    <th>Academic Term</th>
+                    <th>Sch. Category</th>
+                    <th>Class</th>
+                    <th>Subject</th>
+                    <th>Added By</th>
+                    <th>Reg. Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {result_details.data.map((item, i) => {
+                    return (
+                        <tr key={i}>
+                            <td>{i + from}</td>
 
-                                <td>{item.r_tid}</td>
-                                <td>{item.school_year}</td>
-                                <td>{item.school_term}</td>
-                                <td>{item.school_category}</td>
-                                <td>{item.class}</td>
-                                <td>{item.subject}</td>
-                                <td>{item.addby}</td>
-                                <td>{item.r_date}</td>
-                                {/* <td> <span className='badge bg-danger mr-2' type='button'><i onClick={(e) => deleteResult(e, item.id)} className='fa fa-trash-o text-white'></i></span> */}
-                                <td> <span className="badge bg-danger mr-2" type="button"><i onClick={() => deleteDetails(item.id)} className="fa fa-trash-o text-white"></i></span>
-                                    {" "} {" "}
+                            <td>{item.r_tid}</td>
+                            <td>{item.school_year}</td>
+                            <td>{item.school_term}</td>
+                            <td>{item.school_category}</td>
+                            <td>{item.class}</td>
+                            <td>{item.subject}</td>
+                            <td>{item.addby}</td>
+                            <td>{item.r_date}</td>
+                            {/* <td> <span className='badge bg-danger mr-2' type='button'><i onClick={(e) => deleteResult(e, item.id)} className='fa fa-trash-o text-white'></i></span> */}
+                            <td> <span onClick={() => deleteDetails(item.id)} className="badge bg-danger mr-2" type="button"><i className="fa fa-trash-o text-white"></i></span>
+                                {" "} {" "}
 
-                                    <Link to={`view-subjects/${item.r_tid}`} data-tip="Add New Result" data-place="bottom"><span className='badge bg-info' type='button'><i className='fa fa-eye text-white'></i></span></Link>
-                                </td>
-                            </tr>
-                        )
-                    })
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else if (result_details.length < 1) {
-        table_record = <div className='text-center'>
-            <p>No record at the moment</p>
-        </div>
-    }
+                                <Link to={`view-subjects/${item.r_tid}`} data-tip="Add New Result" data-place="bottom"><span className='badge bg-info' type='button'><i className='fa fa-eye text-white'></i></span></Link>
+                            </td>
+                        </tr>
+                    )
+                })
+                }
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content align-items-center mr-3">
+                <span className='mr-2'> </span>
+                <span className='mr-3' style={p}>{current_page} - {to} / {total}</span>
+                <Pagination
+                    activePage={current_page}
+                    totalItemsCount={total}
+                    itemsCountPerPage={per_page}
+                    onChange={(pageNumber) => getAllResult(pageNumber)}
+                    renderOnZeroPageCount={null}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                    firstPageText="First"
+                    lastPageText="Last"
+                />
+            </ul>
+        </nav>
+    </div>
+    // }
+    // else if (result_details.length < 1) {
+    //     table_record = <div className='text-center'>
+    //         <p>No record at the moment</p>
+    //     </div>
+    // }
 
     return (
         <>
@@ -317,16 +360,29 @@ function AddResult() {
                         </div>
                     </div>
                     <div className="card table-responsive">
-                        <div className="card-header">
+                        <div className="card-header bg-dark">
                             <h3 className="card-title">Current result details </h3>
+                            <div className="d-flex justify-content-between">
+                                <p></p>
+                                <span className="badge mr-2" type="button">
+                                    <input name='title' className='form-control form-control-sm' placeholder='Search...' />
+                                </span>
+                            </div>
                         </div>
                         {/* /.card-header */}
                         {/* {result_ID.r_tid} */}
                         <div className="card-body">
-                            <div className='text-center'>
-                                {isfetchLoading && <span className="spinner-border spinner-border-sm mr-1 text-info"></span>}
+                            {is_loading && <div className='overlay text-center'>
+                                <div className="spinner-border spinner-border text-info" role="status">
+                                </div>
+                            </div>}
+                            <div className="card table-responsive">
+                                {result_details.data.length ? table_record :
+                                    <div className='text-center'>
+                                        <p>No record at the moment</p>
+                                    </div>}
                             </div>
-                            {table_record}
+                            {/* {table_record} */}
                         </div>
                     </div>
                 </div>

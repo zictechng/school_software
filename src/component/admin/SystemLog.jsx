@@ -19,8 +19,7 @@ function SystemLog() {
                 if (res.data.status === 200) {
                     setActivitiesLog(res.data.all_details);
                     //setActivitiesLog(res.data);
-                    // console.log(res.data.all_details)
-                    // console.log(activities_log.data);
+                    //console.log(res.data.all_details)
                     // 
                     setIsLoading(false);
                 }
@@ -55,8 +54,8 @@ function SystemLog() {
         return (
             <div className="card-body">
                 <div className='text-center'>
-                    <div className="spinner-border spinner-border-sm text-info" role="status">
-                    </div> Loading
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
                 </div>
             </div>
         )
@@ -64,14 +63,7 @@ function SystemLog() {
     var table_record = "";
     {
         table_record = <div>
-            <div className="card-header">
-                <h3 className="card-title"><span className='text-danger'></span>
-                </h3>
-                <div className="d-flex justify-content-between">
-                    <p></p>
-                    <span className="badge bg-danger mr-2" type="button"></span>
-                </div>
-            </div>
+
             <table id="example1" className="table table-bordered table-striped">
                 <thead>
                     <tr>
@@ -102,17 +94,7 @@ function SystemLog() {
             </table>
 
             <nav aria-label="Page navigation example">
-                {/* <Pagination
-                    activePage={current_page}
-                    totalItemsCount={total}
-                    itemsCountPerPage={per_page}
-                    onChange={(pageNumber) => getSystemLog(pageNumber)}
-                    renderOnZeroPageCount={null}
-                    itemClass="page-item"
-                    linkClass="page-link"
-                    firstPageText="First"
-                    lastPageText="Last"
-                /> */}
+
                 <ul className="pagination justify-content align-items-center mr-3">
                     <span className='mr-2'> </span>
                     <span className='mr-3' style={p}>{current_page} - {to} / {total}</span>
@@ -153,7 +135,13 @@ function SystemLog() {
                     </p>
                     <div className="card table-responsive">
                         <div className="card-header bg-dark">
-                            <h3 className="card-title"> Logs activities details </h3>
+                            <h3 className="card-title"><p style={p}> Current system logs activities </p> </h3>
+                            <div className="d-flex justify-content-between">
+                                <p></p>
+                                <span className="badge mr-2" type="button">
+                                    <input name='title' className='form-control form-control-sm' placeholder='Search...' />
+                                </span>
+                            </div>
                         </div>
                         <div className="card-body">
                             {is_loading && <div className='overlay text-center'>

@@ -3,10 +3,11 @@ import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
+import Pagination from 'react-js-pagination';
 
 function GeneratePin() {
     const history = useHistory();
-    document.title = "Generate PIN | ";
+    document.title = "Generate PIN | " + window.companyName;
 
     const [isfetchLoading, setIsFetchloading] = useState(true);
     const [get_pins, setGetPins] = useState([]);
@@ -15,6 +16,8 @@ function GeneratePin() {
 
     const [loading, setLoading] = useState(false);
 
+    const [isloading, setIs_Loading] = useState(false);
+
     const [add_attendInput, setAddAttenInput] = useState({
         pin_number: '',
     });
@@ -22,15 +25,21 @@ function GeneratePin() {
         e.persist();
         setAddAttenInput({ ...add_attendInput, [e.target.name]: e.target.value })
     }
+    var PageNumber = 1;
     // create a function to fetch all data here
-    const getAllPins = () => {
-        setIsLoading(true)
+    const getAllPins = (PageNumber) => {
+        setIs_Loading(true);
         try {
             // let create the api url here
-            axios.get(`/api/fetch_pin`).then(res => {
+            axios.get(`/api/fetch_pin?page=${PageNumber}`).then(res => {
                 if (res.data.status === 200) {
                     setGetPins(res.data.resultAll);
-                    setIsLoading(false);
+                    setIs_Loading(false);
+                }
+                //data not found
+                else if (res.data.status === 404) {
+                    toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
+                    setIs_Loading(false);
                 }
                 // login required
                 else if (res.data.status === 401) {
@@ -40,7 +49,7 @@ function GeneratePin() {
                     toast.error("sorry, something went wrong! Try again.", { position: 'top-center', theme: 'colored' });
                 }
                 setIsFetchloading(false);
-                setIsLoading(false);
+                setIs_Loading(false);
             });
         } catch (error) {
             // Handle the error
@@ -107,6 +116,8 @@ function GeneratePin() {
         setShowModal(false);
     }
 
+    // get page properties for pagination
+    const { data, current_page, per_page, total, from, to, last_page } = get_pins
     const p = {
         color: "#97a3b9",
         marginTop: "10px",
@@ -115,62 +126,70 @@ function GeneratePin() {
         return (
             <div className="card-body">
                 <div className='text-center'>
-                    <div className="spinner-border spinner-border-sm text-info" role="status">
-                    </div> Loading
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
                 </div>
             </div>
         )
     }
     var table_record = "";
-    if (get_pins.length > 0) {
-        table_record = <div>
-            <div className="card-header">
-                <h3 className="card-title"><span className='text-danger'></span>
-                </h3>
-                <div className="d-flex justify-content-between">
-                    <p></p>
-                    <span className="badge bg-danger mr-2" type="button"></span>
-                </div>
-
-            </div>
-            <table id="example1" className="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Batch ID</th>
-                        <th>Status</th>
-                        <th>Total Pins</th>
-                        <th>Added By</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {get_pins.map((item, i) => {
-                        return (
-                            <tr key={i}>
-                                <td>{i + 1}</td>
-                                <td>{item.card_tid}</td>
-                                <td>{item.card_status}</td>
-                                <td>{item.total_pin}</td>
-                                <td>{item.card_addedby}</td>
-                                <td>{item.card_date}</td>
-                                <td>
-                                    <Link to={`view-pins/${item.id}`}><span className='badge bg-info mr-2' type='button'><i className='fa fa-eye text-white'></i></span></Link>
-                                </td>
-                            </tr>
-                        )
-                    })
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else {
-        table_record = <div className='text-center'>
-            <p>No record at the moment</p>
-        </div>
-    }
+    // if (get_pins.length > 0) {
+    table_record = <div>
+        <table id="example1" className="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Batch ID</th>
+                    <th>Status</th>
+                    <th>Total Pins</th>
+                    <th>Added By</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {get_pins.data.map((item, i) => {
+                    return (
+                        <tr key={i}>
+                            <td>{i + from}</td>
+                            <td>{item.card_tid}</td>
+                            <td>{item.card_status}</td>
+                            <td>{item.total_pin}</td>
+                            <td>{item.card_addedby}</td>
+                            <td>{item.card_date}</td>
+                            <td>
+                                <Link to={`view-pins/${item.id}`}><span className='badge bg-info mr-2' type='button'><i className='fa fa-eye text-white'></i></span></Link>
+                            </td>
+                        </tr>
+                    )
+                })
+                }
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content align-items-center mr-3">
+                <span className='mr-2'> </span>
+                <span className='mr-3' style={p}>{current_page} - {to} / {total}</span>
+                <Pagination
+                    activePage={current_page}
+                    totalItemsCount={total}
+                    itemsCountPerPage={per_page}
+                    onChange={(pageNumber) => getAllPins(pageNumber)}
+                    renderOnZeroPageCount={null}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                    firstPageText="First"
+                    lastPageText="Last"
+                />
+            </ul>
+        </nav>
+    </div>
+    // }
+    // else {
+    //     table_record = <div className='text-center'>
+    //         <p>No record at the moment</p>
+    //     </div>
+    // }
 
     return (
         <>
@@ -195,14 +214,24 @@ function GeneratePin() {
                     <div className="card table-responsive">
                         <div className="card-header bg-dark">
                             <h3 className="card-title"> Student scratch card details </h3>
+                            <div className="d-flex justify-content-between">
+                                <p></p>
+                                <span className="badge mr-2" type="button">
+                                    <input name='title' className='form-control form-control-sm' placeholder='Search...' />
+                                </span>
+                            </div>
                         </div>
 
                         <div className="card-body">
-                            <div className='text-center'>
-                                {is_loading && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                            </div>
+                            {isloading && <div className='overlay text-center'>
+                                <div className="spinner-border spinner-border text-info" role="status">
+                                </div>
+                            </div>}
                             <div className="card table-responsive">
-                                {table_record}
+                                {get_pins.data.length ? table_record :
+                                    <div className='text-center'>
+                                        <p>No record at the moment</p>
+                                    </div>}
                             </div>
 
                         </div>

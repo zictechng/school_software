@@ -1,13 +1,17 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import Pagination from 'react-js-pagination';
 
 function AcademicSession() {
-    document.title = "Add Academic Session | ";
+    document.title = "Add Academic Session | " + window.companyName;
     const [academic_detail, setAcademicDetails] = useState([]);
     const [isLoading, setIsloading] = useState(false);
     const [isclassLoading, setIsClassloading] = useState(true);
+    const [isfetchLoading, setIsFetchloading] = useState(true);
+
+    const [isloading, setIs_Loading] = useState(false);
 
     //const style = { position: "flex", top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
 
@@ -75,8 +79,6 @@ function AcademicSession() {
             setIsloading(false);
         });
     }
-
-
     //update academic session record here....
 
     const submitSessionUpdate = (e) => {
@@ -119,15 +121,20 @@ function AcademicSession() {
             setIsloading(false);
         });
     }
-
+    var PageNumber = 1;
     // create a function to fetch history here
-    const getAcademic_session = (e) => {
-        setIsClassloading(true);
+    const getAcademic_session = (PageNumber) => {
+        setIs_Loading(true);
         // let create the api url here
-        axios.get(`/api/fetch_academic_session`).then(res => {
+        axios.get(`/api/fetch_academic_session?page=${PageNumber}`).then(res => {
             if (res.data.status === 200) {
                 setAcademicDetails(res.data.session_record);
-                //console.log(res.data.history_record);
+                setIs_Loading(false);
+            }
+            //data not found
+            else if (res.data.status === 404) {
+                toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
+                setIs_Loading(false);
             }
             // login required
             else if (res.data.status === 401) {
@@ -136,7 +143,8 @@ function AcademicSession() {
             else {
                 toast.error("sorry, something went wrong! Try again.", { position: 'top-center', theme: 'colored' });
             }
-            setIsClassloading(false);
+            setIsFetchloading(false);
+            setIs_Loading(false);
         });
     }
 
@@ -162,9 +170,7 @@ function AcademicSession() {
     useEffect(() => {
         // call the function here
         getAcademic_session();
-
         return () => {
-
         };
     }, []);
 
@@ -185,48 +191,80 @@ function AcademicSession() {
             }
         })
     }
-    var table_record = "";
-    if (academic_detail.length > 0) {
-        table_record = <div>
+    // get page properties for pagination
+    const { data, current_page, per_page, total, from, to, last_page } = academic_detail
+    const p = {
+        color: "#97a3b9",
+        marginTop: "10px",
+    };
+    if (isfetchLoading) {
+        return (
             <div className="card-body">
-                <table id="example1" className="table table-bordered table-striped">
-
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Academic Session</th>
-                            <th>Added By</th>
-                            <th>Data</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {academic_detail.map((item, i) => {
-                            return (
-                                <tr key={i}>
-                                    <td>{i + 1}</td>
-                                    <td>{item.academic_name}</td>
-                                    <td>{item.add_by}</td>
-                                    <td>{item.a_date}</td>
-                                    <td> <span className='badge bg-danger mr-2'><i onClick={(e) => deleteSession(e, item.id)} className='fa fa-trash-o text-white' type='button'></i></span>
-                                        {" "} {" "}
-                                        <span className='badge bg-primary'><i onClick={() => editSession(item.id)} className='fa fa-pencil text-white' type='button' data-toggle="modal" data-target="#Editsubject_modal"></i></span>
-                                    </td>
-                                </tr>
-                            )
-                        })
-                        }
-                    </tbody>
-
-                </table>
+                <div className='text-center'>
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
+                </div>
             </div>
-        </div>
+        )
     }
-    else {
-        table_record = <div className='text-center'>
-            <p>No record at the moment</p>
-        </div>
-    }
+    var table_record = "";
+    // if (academic_detail.length > 0) {
+    table_record = <div>
+        <table id="example1" className="table table-bordered table-striped">
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Academic Session</th>
+                    <th>Added By</th>
+                    <th>Data</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {academic_detail.data.map((item, i) => {
+                    return (
+                        <tr key={i}>
+                            <td>{i + from}</td>
+                            <td>{item.academic_name}</td>
+                            <td>{item.add_by}</td>
+                            <td>{item.a_date}</td>
+                            <td> <span onClick={(e) => deleteSession(e, item.id)} className='badge bg-danger mr-2'><i className='fa fa-trash-o text-white' type='button'></i></span>
+                                {" "} {" "}
+                                <span onClick={() => editSession(item.id)} className='badge bg-primary'><i className='fa fa-pencil text-white' type='button' data-toggle="modal" data-target="#Editsubject_modal"></i></span>
+                            </td>
+                        </tr>
+                    )
+                })
+                }
+            </tbody>
+
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content align-items-center mr-3">
+                <span className='mr-2'> </span>
+                <span className='mr-3' style={p}>{current_page} - {to} / {total}</span>
+                <Pagination
+                    activePage={current_page}
+                    totalItemsCount={total}
+                    itemsCountPerPage={per_page}
+                    onChange={(pageNumber) => getAcademic_session(pageNumber)}
+                    renderOnZeroPageCount={null}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                    firstPageText="First"
+                    lastPageText="Last"
+                />
+            </ul>
+        </nav>
+    </div>
+
+    // }
+    // else {
+    //     table_record = <div className='text-center'>
+    //         <p>No record at the moment</p>
+    //     </div>
+    // }
     return (
         <>
             <div className="content-header">
@@ -238,21 +276,37 @@ function AcademicSession() {
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-
-                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
                                 <li className='mr-3'><button type="button" className="btn btn-block btn-info btn-sm" data-toggle="modal" data-target="#AddSession_modal">Create New Session</button></li>
+                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
+
                             </ol>
                         </div>
                     </div>
 
                     <div className="card table-responsive">
-                        <div className="card-header">
+                        <div className="card-header bg-dark">
                             <h3 className="card-title">Current academic details</h3>
+                            <div className="d-flex justify-content-between">
+                                <p></p>
+                                <span className="badge mr-2" type="button">
+                                    <input name='title' className='form-control form-control-sm' placeholder='Search...' />
+                                </span>
+                            </div>
                         </div>
-                        {/* /.card-header */}
+                        <div className="card-body">
+                            {isloading && <div className='overlay text-center'>
+                                <div className="spinner-border spinner-border text-info" role="status">
+                                </div>
+                            </div>}
+                            <div className="card table-responsive">
+                                {academic_detail.data.length ? table_record :
+                                    <div className='text-center'>
+                                        <p>No record at the moment</p>
+                                    </div>}
+                            </div>
+                            {/* {table_record} */}
+                        </div>
 
-                        {/* /.card-body */}
-                        {table_record}
                     </div>
                     {/* /.card */}
                     {/* /.col */}

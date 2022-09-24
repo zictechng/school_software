@@ -1,11 +1,12 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import Pagination from 'react-js-pagination';
 
 function SchoolResuption() {
 
-    document.title = "School Resumption | ";
+    document.title = "School Resumption | " + window.companyName;
     const [school_resumption, setSchoolResumption] = useState([]);
     const [isLoading, setIsloading] = useState(false);
     const [isclassLoading, setIsClassloading] = useState(true);
@@ -13,6 +14,7 @@ function SchoolResuption() {
 
     const [schoolYears, setSchoolYear] = useState([]);
     const [schoolTerm, setSchoolTerm] = useState([]);
+    const [isloading, setIs_Loading] = useState(false);
 
     const [school_resumptionInput, setSchoolResumptionInput] = useState({
         start_date: '',
@@ -161,15 +163,20 @@ function SchoolResuption() {
             setIsClassloading(false);
         });
     }
-
+    var PageNumber = 1;
     // create a function to fetch all data here
-    const getSchoolCategory = (e) => {
-        setIsFetchloading(true);
+    const getSchoolCategory = (PageNumber) => {
+        setIs_Loading(true);
         // let create the api url here
-        axios.get(`/api/fetch_all_resumption`).then(res => {
+        axios.get(`/api/fetch_all_resumption?page=${PageNumber}`).then(res => {
             if (res.data.status === 200) {
                 setSchoolResumption(res.data.resump_record);
-                //console.log(res.data.history_record);
+                setIs_Loading(false);
+            }
+            //data not found
+            else if (res.data.status === 404) {
+                toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
+                setIs_Loading(false);
             }
             // login required
             else if (res.data.status === 401) {
@@ -179,6 +186,7 @@ function SchoolResuption() {
                 toast.error("sorry, something went wrong! Try again.", { position: 'top-center', theme: 'colored' });
             }
             setIsFetchloading(false);
+            setIs_Loading(false);
         });
     }
 
@@ -205,9 +213,7 @@ function SchoolResuption() {
     useEffect(() => {
         // call the function here
         getSchoolCategory();
-
         return () => {
-
         };
     }, []);
 
@@ -228,53 +234,85 @@ function SchoolResuption() {
             }
         })
     }
-
+    // get page properties for pagination
+    const { data, current_page, per_page, total, from, to, last_page } = school_resumption
+    const p = {
+        color: "#97a3b9",
+        marginTop: "10px",
+    };
+    if (isfetchLoading) {
+        return (
+            <div className="card-body">
+                <div className='text-center'>
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
+                </div>
+            </div>
+        )
+    }
     var table_record = "";
-    if (school_resumption.length > 0) {
-        table_record = <div>
-            <table id="example1" className="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Start Date</th>
-                        <th>Close Date</th>
-                        <th>Term</th>
-                        <th>Year</th>
-                        <th>Next Resumption</th>
-                        <th>Added By</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {school_resumption.map((item, i) => {
-                        return (
-                            <tr key={i}>
-                                <td>{i + 1}</td>
-                                <td>{item.start_date}</td>
-                                <td>{item.close_date}</td>
-                                <td>{item.schoolyear.academic_name}</td>
-                                <td>{item.schoolterm.term_name}</td>
-                                <td>{item.next_resumption}</td>
-                                <td>{item.added_by}</td>
-                                <td>{item.add_date}</td>
-                                <td> <span className='badge bg-danger mr-2' type='button'><i onClick={(e) => deleteresumption(e, item.id)} className='fa fa-trash-o text-white'></i></span>
-                                    {" "} {" "}
-                                    <span className='badge bg-primary' type='button'><i onClick={() => editSchoolCategory(item.id)} className='fa fa-pencil text-white' data-toggle="modal" data-target="#editSchoolCategory_modal"></i></span>
-                                </td>
-                            </tr>
-                        )
-                    })
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else if (school_resumption.length < 1) {
-        table_record = <div className='text-center'>
-            <p>No record at the moment</p>
-        </div>
-    }
+    // if (school_resumption.length > 0) {
+    table_record = <div>
+        <table id="example1" className="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Start Date</th>
+                    <th>Close Date</th>
+                    <th>Term</th>
+                    <th>Year</th>
+                    <th>Next Resumption</th>
+                    <th>Added By</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {school_resumption.data.map((item, i) => {
+                    return (
+                        <tr key={i}>
+                            <td>{i + from}</td>
+                            <td>{item.start_date}</td>
+                            <td>{item.close_date}</td>
+                            <td>{item.schoolyear.academic_name}</td>
+                            <td>{item.schoolterm.term_name}</td>
+                            <td>{item.next_resumption}</td>
+                            <td>{item.added_by}</td>
+                            <td>{item.add_date}</td>
+                            <td> <span onClick={(e) => deleteresumption(e, item.id)} className='badge bg-danger mr-2' type='button'><i className='fa fa-trash-o text-white'></i></span>
+                                {" "} {" "}
+                                <span onClick={() => editSchoolCategory(item.id)} className='badge bg-primary' type='button'><i className='fa fa-pencil text-white' data-toggle="modal" data-target="#editSchoolCategory_modal"></i></span>
+                            </td>
+                        </tr>
+                    )
+                })
+                }
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content align-items-center mr-3">
+                <span className='mr-2'> </span>
+                <span className='mr-3' style={p}>{current_page} - {to} / {total}</span>
+                <Pagination
+                    activePage={current_page}
+                    totalItemsCount={total}
+                    itemsCountPerPage={per_page}
+                    onChange={(pageNumber) => getSchoolCategory(pageNumber)}
+                    renderOnZeroPageCount={null}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                    firstPageText="First"
+                    lastPageText="Last"
+                />
+            </ul>
+        </nav>
+    </div>
+    // }
+    // else if (school_resumption.length < 1) {
+    //     table_record = <div className='text-center'>
+    //         <p>No record at the moment</p>
+    //     </div>
+    // }
     return (
         <>
             <div className="content-header">
@@ -286,24 +324,34 @@ function SchoolResuption() {
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-
-                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
                                 <li className='mr-3'><button type="button" className="btn btn-block btn-info btn-sm" data-toggle="modal" data-target="#Addschool_resumption">Create New Resumption</button></li>
+                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
                             </ol>
                         </div>
                     </div>
 
                     <div className="card table-responsive">
-                        <div className="card-header">
+                        <div className="card-header bg-dark">
                             <h3 className="card-title">Current academic school resumption details</h3>
+                            <div className="d-flex justify-content-between">
+                                <p></p>
+                                <span className="badge mr-2" type="button">
+                                    <input name='title' className='form-control form-control-sm' placeholder='Search...' />
+                                </span>
+                            </div>
                         </div>
                         {/* /.card-header */}
                         <div className="card-body">
-                            <div className='text-center'>
-                                {isfetchLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                            {isloading && <div className='overlay text-center'>
+                                <div className="spinner-border spinner-border text-info" role="status">
+                                </div>
+                            </div>}
+                            <div className="card table-responsive">
+                                {school_resumption.data.length ? table_record :
+                                    <div className='text-center'>
+                                        <p>No record at the moment</p>
+                                    </div>}
                             </div>
-
-                            {table_record}
                         </div>
 
                     </div>

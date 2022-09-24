@@ -177,7 +177,7 @@ function ViewResultDetails(props) {
     // create a function to fetch class data here
     useEffect(() => {
         setLoading(true);
-        axios.get(`/api/fetch_subject`).then(res => {
+        axios.get(`/api/get_all_subject`).then(res => {
             if (res.data.status === 200) {
                 setGetAllSubject(res.data.subject_record);
             }
@@ -288,7 +288,7 @@ function ViewResultDetails(props) {
         return (
             <div className="card-body">
                 <div className='text-center'>
-                    <div className="spinner-border spinner-border-sm text-info" role="status">
+                    <div className="spinner-border spinner-border text-info" role="status">
                     </div> Loading
                 </div>
             </div>

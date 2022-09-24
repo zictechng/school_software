@@ -4,7 +4,7 @@ import { UserContext } from '../../context/UserContext';
 import axios from 'axios';
 import Image from '../../assets/dist/img/avatar_2.png';
 
-const userID = localStorage.getItem("auth_loggedID");
+const userID = sessionStorage.getItem("auth_loggedID");
 
 export default function Header() {
 
@@ -15,6 +15,9 @@ export default function Header() {
     const [count_message] = message_count;
     const [view_details, setViewDetails] = useState([]);
     const [my_photo, setMyPhoto] = user_image;
+    const [display_banner, setDisplayBanner] = useState([]);
+    const [display_logo, setDisplayLogo] = useState([]);
+    const [setting_details, setSettingDetails] = useState({});
     //message fetch here...
 
     useEffect(() => {
@@ -28,9 +31,32 @@ export default function Header() {
 
         });
     }, []);
+
+    // create a function to fetch all term here
+    const getSettingDetails = () => {
+        // let create the api url here
+        axios.get(`/api/fetch_setting_details`).then(res => {
+            if (res.data.status === 200) {
+                setSettingDetails(res.data.setting_record);
+                setDisplayBanner(res.data.setting_record);
+                setDisplayLogo(res.data.setting_record);
+            }
+            // login required
+            else if (res.data.status === 401) {
+                toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
+            }
+        });
+    }
+    useEffect(() => {
+        // call the function here
+        getSettingDetails();
+        return () => {
+        };
+    }, []);
+
     // check if user have profile image and show it else, show default one.
     const myphoto = (my_photo.staff_image !== undefined && my_photo.staff_image !== null) ?
-        (my_photo.uploadedImage ? my_photo.staff_image : `http://localhost:8000/` + my_photo.staff_image) : Image;
+        (my_photo.uploadedImage ? my_photo.staff_image : window.BASE_URL + my_photo.staff_image) : Image;
     return (
         <>
             <nav className="main-header navbar navbar-expand navbar-white navbar-light">
@@ -38,10 +64,10 @@ export default function Header() {
                     <li className="nav-item">
                         <a className="nav-link" data-widget="pushmenu" href="#" role="button"><i className="fas fa-bars" /></a>
                     </li>
-                    {/* <li className="nav-item d-none d-sm-inline-block">
-                        <a href="index3.html" className="nav-link">Home</a>
-                    </li>
                     <li className="nav-item d-none d-sm-inline-block">
+                        <a href="#" className="nav-link"><strong><h3>{display_logo.sch_name}</h3></strong></a>
+                    </li>
+                    {/* <li className="nav-item d-none d-sm-inline-block">
                         <a href="#" className="nav-link">Contact</a>
                     </li> */}
                 </ul>

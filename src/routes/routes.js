@@ -62,7 +62,7 @@ import ViewAssignClass from '../component/admin/manage_extra/ViewAssignClass';
 import PsychomotorDomain from '../component/admin/manage_extra/PsychomotorDomain';
 import EnterPsychomotorDomain from '../component/admin/manage_extra/EnterPsychomotorDomain';
 import ViewPsychomotorDomain from '../component/admin/manage_extra/ViewPsychomotorDomain';
-import SystemLog from '../component/SystemLog';
+import SystemLog from '../component/admin/SystemLog';
 import ManageUpload from '../component/admin/resultmodule/ManageUpload';
 import ManageUpload2 from '../component/admin/resultmodule/ManageUpload2';
 import PositionView from '../component/admin/maintainresult/PositionView';
@@ -76,6 +76,10 @@ import ViewCADetails from '../component/admin/resultmodule/ViewCADetails';
 import TestCode from '../component/admin/TestCode';
 import ResultPrintPage from '../component/admin/resultmodule/ResultPrintPage';
 import SaveText1 from '../component/SaveTest1';
+import PrintResult from '../component/admin/resultmodule/PrintResult';
+import PrintResultView from '../component/admin/resultmodule/PrintResultView';
+import SystemSetup from '../component/admin/SystemSetup';
+import StudentBirthday from '../component/admin/StudentBirthday';
 
 
 const routes = [
@@ -159,6 +163,10 @@ const routes = [
     { path: '/admin/text-code', exact: true, name: 'TestCode', component: TestCode },
     { path: '/admin/print-sheet', exact: true, name: 'ResultPrintPage', component: ResultPrintPage },
     { path: '/admin/save-test1', exact: true, name: 'SaveText1', component: SaveText1 },
+    { path: '/admin/print-result', exact: true, name: 'PrintResult', component: PrintResult },
+    { path: '/admin/show-result/:id', exact: true, name: 'PrintResultView', component: PrintResultView },
+    { path: '/admin/info-setup', exact: true, name: 'SystemSetup', component: SystemSetup },
+    { path: '/admin/birthday-list', exact: true, name: 'StudentBirthday', component: StudentBirthday },
 
 
 ]

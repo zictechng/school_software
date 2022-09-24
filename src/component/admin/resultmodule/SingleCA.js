@@ -6,15 +6,17 @@ import ReactTooltip from 'react-tooltip';
 import Select from "react-select";
 
 function SingleCA() {
-    document.title = "Manage Single CA Entry | ";
+    document.title = "Manage Single CA Entry | " + window.companyName;
     const history = useHistory();
     const [loading, setLoading] = useState(true);
     const [isLoading, setIsloading] = useState(false);
     const [all_studentDetails, setAllStudentDetails] = useState([]);
+    const [allstudentDetails, setStudentDetails] = useState([]);
     const [schoolYears, setSchoolYear] = useState([]);
     const [schoolTerm, setSchoolTerm] = useState([]);
     const [all_class, setAllClass] = useState([]);
     const [sch_category, setSchCatgory] = useState([]);
+    const [class_id, setClassId] = useState([]);
 
     const [all_subjects, setAllSubjects] = useState([]);
     const [validationErrors, setValidationErrors] = useState(null);
@@ -41,9 +43,9 @@ function SingleCA() {
 
     // create a function to fetch class data here
     useEffect(() => {
-        axios.get(`/api/fetch_all_student`).then((res) => {
+        axios.get(`/api/fetch_all_student_result`).then((res) => {
             if (res.data.status === 200) {
-                setAllStudentDetails(res.data.student_record);
+                setStudentDetails(res.data.student_record);
             }
             setLoading(false);
         });
@@ -114,7 +116,14 @@ function SingleCA() {
         try {
             // let create the api url here
             axios
-                .post(`/api/result_single_ca_save`, { data: rows, ...formData })
+                .post(`/api/result_single_ca_save`, {
+                    data: rows,
+                    year: formData.year,
+                    term: formData.term,
+                    subject: formData.subject,
+                    school_category: formData.school_category,
+                    class: class_id,
+                })
                 .then((res) => {
                     if (res.data.status === 200) {
                         setIsloading(false);
@@ -173,6 +182,20 @@ function SingleCA() {
     function handleSelect2Input(stateName, selectedItem) {
         setFormData({ ...formData, [stateName]: selectedItem.value });
     }
+    // this will be called when class select dropdown is change and use it to fetch student base on
+    // the class id selected.
+    function handleSelectClassnput(stateName, selectedItem) {
+        //alert(selectedItem.value);
+        setClassId(selectedItem.value);
+        var class_data = selectedItem.value;
+        // let create the api url here
+        axios.post(`/api/fetch_all_student_name/`, { id: class_data }).then(res => {
+            if (res.data.status === 200) {
+                setAllStudentDetails(res.data.allstudent_list);
+            }
+        });
+    }
+
     const p = {
         color: "#97a3b9",
         marginTop: "10px",
@@ -182,10 +205,9 @@ function SingleCA() {
             <div className="card-body">
                 <div className="text-center">
                     <div
-                        className="spinner-border spinner-border-sm text-info"
+                        className="spinner-border spinner-border text-info"
                         role="status"
-                    ></div>{" "}
-                    Loading
+                    ></div>
                 </div>
             </div>
         );
@@ -201,16 +223,6 @@ function SingleCA() {
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
                                 <li className="mr-3">
-                                    <Link to="/admin/index">
-                                        <button
-                                            type="button"
-                                            className="btn btn-block btn-dark btn-sm" data-tip="Dashboard" data-place="bottom"
-                                        >
-                                            <i className="fa fa-home"></i>{" "}
-                                        </button>
-                                    </Link>
-                                </li>
-                                <li className="mr-3">
                                     <Link to="/admin/ca-result">
                                         <button
                                             type="button"
@@ -219,6 +231,16 @@ function SingleCA() {
                                             View Result
                                         </button>
                                     </Link>{" "}
+                                </li>
+                                <li className="mr-3">
+                                    <Link to="/admin/index">
+                                        <button
+                                            type="button"
+                                            className="btn btn-block btn-dark btn-sm" data-tip="Dashboard" data-place="bottom"
+                                        >
+                                            <i className="fa fa-home"></i>{" "}
+                                        </button>
+                                    </Link>
                                 </li>
                             </ol>
                         </div>
@@ -253,6 +275,7 @@ function SingleCA() {
                                                 isDisabled={false}
                                                 isLoading={false}
                                                 onChange={(e) => handleSelect2Input("subject", e)}
+                                                placeholder="Select Subject"
                                             />
                                             {validationErrors &&
                                                 validationErrors[`subject`] ? (
@@ -274,6 +297,7 @@ function SingleCA() {
                                                 isDisabled={false}
                                                 isLoading={false}
                                                 onChange={(e) => handleSelect2Input("term", e)}
+                                                placeholder="Select Term"
                                             />
                                             {validationErrors &&
                                                 validationErrors[`term`] ? (
@@ -297,6 +321,7 @@ function SingleCA() {
                                                 isDisabled={false}
                                                 isLoading={false}
                                                 onChange={(e) => handleSelect2Input("year", e)}
+                                                placeholder="Select Year"
                                             />
                                             {validationErrors &&
                                                 validationErrors[`year`] ? (
@@ -317,7 +342,8 @@ function SingleCA() {
                                                 isSearchable={true}
                                                 isDisabled={false}
                                                 isLoading={false}
-                                                onChange={(e) => handleSelect2Input("class", e)}
+                                                onChange={(e) => handleSelectClassnput("class", e)}
+                                                placeholder="Select Class"
                                             />
                                             {validationErrors &&
                                                 validationErrors[`class`] ? (
@@ -341,6 +367,7 @@ function SingleCA() {
                                                 onChange={(e) =>
                                                     handleSelect2Input("school_category", e)
                                                 }
+                                                placeholder="Select Category"
                                             />
                                             {validationErrors &&
                                                 validationErrors[`school_category`] ? (
@@ -386,7 +413,7 @@ function SingleCA() {
                                                     className="form-control"
                                                     onChange={(e) => handleSelectChange(e, i)}
                                                 >
-                                                    <option>Select</option>
+                                                    <option>Select Student</option>
                                                     {all_studentDetails.map((item) => {
                                                         return (
                                                             <option value={item.st_admin_number} key={item.id}>{item.other_name} {item.surname}</option>

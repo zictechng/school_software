@@ -73,7 +73,7 @@ function ViewStaff(props) {
     }
     // check if user have profile image and show it else, show default one.
     const myphoto = (display_image.staff_image !== undefined && display_image.staff_image !== null) ?
-        (display_image.uploadedImage ? display_image.staff_image : `http://localhost:8000/` + display_image.staff_image) : Image;
+        (display_image.uploadedImage ? display_image.staff_image : window.BASE_URL + display_image.staff_image) : Image;
     // ends here
 
     // create a function to fetch class data here
@@ -116,9 +116,8 @@ function ViewStaff(props) {
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-
-                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
                                 <li className='mr-3'><Link to='/admin/staff'><button type="button" className="btn btn-block btn-info btn-sm">View Staff</button></Link> </li>
+                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
                             </ol>
                         </div>
                     </div>

@@ -25,14 +25,14 @@ function Forgotpassword() {
                                     <div className="col-12">
                                         <button type="submit" className="btn btn-primary btn-block">Request new password</button>
                                     </div>
-                                    {/* /.col */}
+
                                 </div>
                             </form>
                             <p className="mt-3 mb-1">
                                 <Link to="/login">Login</Link>
                             </p>
                         </div>
-                        {/* /.login-card-body */}
+
                     </div>
                 </div>
             </div>
@@ -41,4 +41,4 @@ function Forgotpassword() {
     )
 }
 
-export default Forgotpassword
+export default Forgotpassword;

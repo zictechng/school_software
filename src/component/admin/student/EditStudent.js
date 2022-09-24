@@ -13,6 +13,9 @@ function EditStudent(props) {
 
     const [isLoading, setIsloading] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [list_error, setListError] = useState([]);
+    const [pLoading, setPloading] = useState(false);
+
     const style = { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
     //decl all variable here
 
@@ -163,13 +166,85 @@ function EditStudent(props) {
         }
 
     }
+    //declare variable for password update here..
+    const [pass_student, setPassStudent] = useState({
+        new_password: '',
+        confirm_password: '',
+        id: '',
+    });
 
+    // declare input handling function here
+    const handleInputPassword = (e) => {
+        e.persist();
+        setPassStudent({ ...pass_student, [e.target.name]: e.target.value })
+    }
+    const submitPassword = (e) => {
+        e.preventDefault();
+        setPloading(true);
+        const record_id = props.match.params.id;
+
+        const data = {
+            new_password: pass_student.new_password,
+            confirm_password: pass_student.confirm_password,
+            id: props.match.params.id,
+        }
+        try {
+            // let create the api url here
+            axios.post(`/api/update_student_password`, data).then(res => {
+                if (res.data.status === 200) {
+                    // successful message
+                    toast.success(res.data.message, { theme: 'colored' });
+                    setListError([]);
+
+                    history.push('/admin/student');
+                }
+                // record already exist
+                else if (res.data.status === 402) {
+                    toast.error(res.data.message, { theme: 'colored' });
+                    setListError(res.data.errors);
+                }
+                // data input required
+                else if (res.data.status === 422) {
+                    toast.error('Missing Data Required', { theme: 'colored' });
+                    setListError(res.data.errors);
+                }
+                // error record not save
+                else if (res.data.status === 500) {
+                    toast.warning('Missing Data Required', { position: 'top-center', theme: 'colored' });
+                    setListError(res.data.errors);
+                }
+                // login required
+                else if (res.data.status === 401) {
+                    toast.error(res.data.message, { theme: 'colored' });
+                    setListError(res.data.errors);
+                }
+                else {
+                    toast.error("sorry, something went wrong! Try again.", { theme: 'colored' });
+                    setListError(res.data.errors);
+                }
+                setPloading(false);
+            });
+
+        } catch (error) {
+            // Handle the error
+            toast.error("sorry, server error! Try again. ".error, { theme: 'colored' });
+            setIsloading(false);
+
+        }
+
+    }
     if (loading) {
         return (
-            <div style={style}>
-                <div className="spinner-border spinner-border-sm text-info" role="status">
-                </div> Loading
+            <div className="card-body">
+                <div className='text-center'>
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
+                </div>
             </div>
+            // <div style={style}>
+            //     <div className="spinner-border spinner-border text-info" role="status">
+            //     </div> Loading
+            // </div>
         )
     }
     return (
@@ -505,6 +580,43 @@ function EditStudent(props) {
                             </form>
 
                         </div>
+
+                    </div>
+                    <div className="card">
+                        <div className="card-header">
+                            <h3 className="card-title text-danger">Update Password Details</h3>
+                        </div>
+                        {/* /.card-header */}
+                        <div className="card-body p-3">
+                            <form onSubmit={submitPassword}>
+                                <div className="row">
+                                    <div className="col-sm-5">
+                                        {/* text input */}
+                                        <div className="form-group">
+                                            <label>New Password</label>
+                                            <input type="password" name='new_password' onChange={handleInputPassword} value={pass_student.new_password} className="form-control" placeholder="New Password" />
+                                            <small className='text-danger'>{list_error.new_password}</small>
+                                        </div>
+                                    </div>
+                                    <div className="col-sm-5">
+                                        <div className="form-group">
+                                            <label>Confirm Password</label>
+                                            <input type="password" name='confirm_password' onChange={handleInputPassword} value={pass_student.confirm_password} className="form-control" placeholder="Confirm Password" />
+                                            <small className='text-danger'>{list_error.confirm_password}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="modal-footer">
+
+                                    <button type='submit' disabled={pLoading} className="btn btn-success">
+                                        {pLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                        Update Password
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                        {/* /.card-body */}
                     </div>
                 </div>
             </div>

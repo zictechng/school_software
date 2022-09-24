@@ -1,14 +1,16 @@
-import axios from 'axios';
+import { toast } from 'react-toastify';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import axios from 'axios';
+import Pagination from 'react-js-pagination';
 
 function CurrentSession() {
-    document.title = "Current Running Session| ";
+    document.title = "Current Running Session| " + window.companyName;
     const [current_session, setCurrentSession] = useState([]);
     const [isLoading, setIsloading] = useState(false);
     const [isclassLoading, setIsClassloading] = useState(true);
     const [isfetchLoading, setIsFetchloading] = useState(true);
+    const [isloading, setIs_Loading] = useState(false);
 
     const [schoolYears, setSchoolYear] = useState([]);
     //const [schoolTerm, setSchoolTerm] = useState([]);
@@ -140,15 +142,20 @@ function CurrentSession() {
         });
     }
 
-
+    var PageNumber = 1;
     // create a function to fetch all data here
-    const getAll = (e) => {
-        setIsFetchloading(true);
+    const getAll = (PageNumber) => {
+        setIs_Loading(true);
         // let create the api url here
-        axios.get(`/api/fetch_all`).then(res => {
+        axios.get(`/api/fetch_all_session?page=${PageNumber}`).then(res => {
             if (res.data.status === 200) {
                 setCurrentSession(res.data.c_record);
-                //console.log(res.data.history_record);
+                setIs_Loading(false);
+            }
+            //data not found
+            else if (res.data.status === 404) {
+                toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
+                setIs_Loading(false);
             }
             // login required
             else if (res.data.status === 401) {
@@ -158,6 +165,7 @@ function CurrentSession() {
                 toast.error("sorry, something went wrong! Try again.", { position: 'top-center', theme: 'colored' });
             }
             setIsFetchloading(false);
+            setIs_Loading(false);
         });
     }
     useEffect(() => {
@@ -178,15 +186,6 @@ function CurrentSession() {
         });
     }, []);
 
-    // create a function to fetch school term  data here
-    // useEffect(() => {
-    //     axios.get(`/api/fetch_allterm`).then(res => {
-    //         if (res.data.status === 200) {
-    //             setSchoolTerm(res.data.termrecord);
-    //         }
-
-    //     });
-    // }, []);
 
     // delete operation here
     const delete_current = (e, id) => {
@@ -205,45 +204,77 @@ function CurrentSession() {
             }
         })
     }
-
+    // get page properties for pagination
+    const { data, current_page, per_page, total, from, to, last_page } = current_session
+    const p = {
+        color: "#97a3b9",
+        marginTop: "10px",
+    };
+    if (isfetchLoading) {
+        return (
+            <div className="card-body">
+                <div className='text-center'>
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
+                </div>
+            </div>
+        )
+    }
     var table_record = "";
-    if (current_session.length > 0) {
-        table_record = <div>
-            <table id="example1" className="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Current Session</th>
-                        <th>Added By</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {current_session.map((item, i) => {
-                        return (
-                            <tr key={i}>
-                                <td>{i + 1}</td>
-                                <td>{item.schoolyear.academic_name}</td>
-                                <td>{item.session_addedby}</td>
-                                <td>{item.session_date}</td>
-                                <td> <span className='badge bg-danger mr-2' type='button'><i onClick={(e) => delete_current(e, item.id)} className='fa fa-trash-o text-white'></i></span>
-                                    {" "} {" "}
-                                    <span className='badge bg-primary' type='button'><i onClick={() => editCurrent_session(item.id)} className='fa fa-pencil text-white' data-toggle="modal" data-target="#editSession_modal"></i></span>
-                                </td>
-                            </tr>
-                        )
-                    })
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else if (current_session.length < 1) {
-        table_record = <div className='text-center'>
-            <p>No record at the moment</p>
-        </div>
-    }
+    // if (current_session.length > 0) {
+    table_record = <div>
+        <table id="example1" className="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Current Session</th>
+                    <th>Added By</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {current_session.data.map((item, i) => {
+                    return (
+                        <tr key={i}>
+                            <td>{i + from}</td>
+                            <td>{item.schoolyear.academic_name}</td>
+                            <td>{item.session_addedby}</td>
+                            <td>{item.session_date}</td>
+                            <td> <span onClick={(e) => delete_current(e, item.id)} className='badge bg-danger mr-2' type='button'><i className='fa fa-trash-o text-white'></i></span>
+                                {" "} {" "}
+                                <span onClick={() => editCurrent_session(item.id)} className='badge bg-primary' type='button'><i className='fa fa-pencil text-white' data-toggle="modal" data-target="#editSession_modal"></i></span>
+                            </td>
+                        </tr>
+                    )
+                })
+                }
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content align-items-center mr-3">
+                <span className='mr-2'> </span>
+                <span className='mr-3' style={p}>{current_page} - {to} / {total}</span>
+                <Pagination
+                    activePage={current_page}
+                    totalItemsCount={total}
+                    itemsCountPerPage={per_page}
+                    onChange={(pageNumber) => getAll(pageNumber)}
+                    renderOnZeroPageCount={null}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                    firstPageText="First"
+                    lastPageText="Last"
+                />
+            </ul>
+        </nav>
+    </div>
+    // }
+    // else if (current_session.length < 1) {
+    //     table_record = <div className='text-center'>
+    //         <p>No record at the moment</p>
+    //     </div>
+    // }
     return (
         <>
             <div className="content-header">
@@ -255,9 +286,8 @@ function CurrentSession() {
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-
-                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
                                 <li className='mr-3'><button type="button" className="btn btn-block btn-info btn-sm" data-toggle="modal" data-target="#Addcurrent_session">Add New</button></li>
+                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
                             </ol>
                         </div>
                     </div>
@@ -265,14 +295,25 @@ function CurrentSession() {
                     <div className="card table-responsive">
                         <div className="card-header">
                             <h3 className="card-title">Current running session details</h3>
+                            <div className="d-flex justify-content-between">
+                                <p></p>
+                                <span className="badge mr-2" type="button">
+                                    <input name='title' className='form-control form-control-sm' placeholder='Search...' />
+                                </span>
+                            </div>
                         </div>
                         {/* /.card-header */}
                         <div className="card-body">
-                            <div className='text-center'>
-                                {isfetchLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                            {isloading && <div className='overlay text-center'>
+                                <div className="spinner-border spinner-border text-info" role="status">
+                                </div>
+                            </div>}
+                            <div className="card table-responsive">
+                                {current_session.data.length ? table_record :
+                                    <div className='text-center'>
+                                        <p>No record at the moment</p>
+                                    </div>}
                             </div>
-
-                            {table_record}
                         </div>
 
                     </div>

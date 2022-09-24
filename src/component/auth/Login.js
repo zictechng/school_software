@@ -6,15 +6,18 @@ import { useHistory } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 function Login() {
 
-    document.title = "Login ";
+    document.title = "Login | " + window.companyName;
     const history = useHistory();
 
     //const [user, setUser] = useState({});
-    const { user, loggin_state, checkLoggin, loggin_check } = useContext(UserContext);
+    const { user, loggin_state, checkLoggin, loggin_check, schLogo, schBanner, userip } = useContext(UserContext);
     const [user_details, setUserDetails] = user;
     const [user_loggin_state, setUserLogginState] = loggin_state;
     const [logged_check, setLoggedCheck] = checkLoggin;
     const [logged_status, setLoggedStatus] = loggin_check;
+    const [banner_school, setBannerSchool] = schBanner;
+    const [logo_school, setLogoSchool] = schLogo;
+    const [user_ip, setUserIP] = userip;
 
     const [loginInput, setLogin] = useState({
         /* declear veriable */
@@ -42,11 +45,14 @@ function Login() {
         axios.get('/sanctum/csrf-cookie').then(response => {
             axios.post(`/api/login`, data).then(res => {
                 if (res.data.status === 200) {
-                    localStorage.setItem('auth_token', res.data.loginState.token);
-                    localStorage.setItem('auth_loggedID', res.data.loginState.logged_id);
+                    sessionStorage.setItem('auth_token', res.data.loginState.token);
+                    sessionStorage.setItem('auth_loggedID', res.data.loginState.logged_id);
                     setUserDetails(res.data.loginState.userDetails);
                     setUserLogginState(res.data.loginState.loggedUID);
                     setLoggedStatus(res.data.loginState.loggedUID);
+                    setLogoSchool(res.data.loginState.setting_record);
+                    setUserIP(res.data.loginState.user_ip);
+                    console.log(res.data.loginState.user_ip);
 
                     toast.success(res.data.loginState.message, { theme: 'colored' });
 
@@ -63,7 +69,7 @@ function Login() {
                     //setLoggedStatus(res.data.logged_id);
                 }
                 else if (res.data.status === 401) {
-                    toast.warning("Sorry! " + res.data.loginState.message);
+                    toast.warning("Sorry! " + res.data.message);
                     //swal("Warning!", res.data.message, "warning");
                     setIsLoading(false);
                 }

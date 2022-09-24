@@ -5,13 +5,15 @@ import { Modal, Button } from 'react-bootstrap';
 import ReactTooltip from 'react-tooltip';
 import Select from "react-select";
 import axios from 'axios';
+import Pagination from 'react-js-pagination';
 
 function CAResult() {
     const history = useHistory();
-    document.title = "Manage CA Result | ";
+    document.title = "Manage CA Result | " + window.companyName;
+    const [isfetchLoading, setIsFetchloading] = useState(true);
     const [result_details, setResultDetails] = useState([]);
 
-    const [isfetchLoading, setIsFetchloading] = useState(false);
+    const [is_loading, setIs_Loading] = useState(false);
     const [isLoading, setIsloading] = useState(false);
 
     const [schoolYears, setSchoolYear] = useState([]);
@@ -24,7 +26,7 @@ function CAResult() {
 
     const [fetch_result, setFetchResult] = useState({});
     const [list_error, setListError] = useState([]);
-    //const [loading, setLoading] = useState(true);
+    var PageNumber = 1;
     //decl all variable here
     const [add_resultInput, setCAResultInput] = useState({
         school_year: '',
@@ -110,14 +112,20 @@ function CAResult() {
 
     }
     // create a function to fetch all data here
-    const getAllCA = () => {
+    const getAllCA = (PageNumber) => {
+        setIs_Loading(true)
         try {
-            setIsFetchloading(true);
+
             // let create the api url here
-            axios.get(`/api/fetch_ca_result`).then(res => {
+            axios.get(`/api/fetch_ca_result?page=${PageNumber}`).then(res => {
                 if (res.data.status === 200) {
                     setResultDetails(res.data.ca_record);
                     //console.log(res.data.history_record);
+                    setIs_Loading(false);
+                }
+                // No record found at the moment
+                else if (res.data.status === 404) {
+                    toast.error(res.data.message, { theme: 'colored' });
                 }
                 // login required
                 else if (res.data.status === 401) {
@@ -127,11 +135,14 @@ function CAResult() {
                     toast.error("sorry, something went wrong! Try again.", { position: 'top-center', theme: 'colored' });
                 }
                 setIsFetchloading(false);
+                setIs_Loading(false);
                 //setLoading(false);
             });
         } catch (error) {
             // Handle the error
             toast.error("sorry, server error! Try again. ".error, { theme: 'colored' });
+            setIsFetchloading(false);
+            setIs_Loading(false);
         }
     }
     useEffect(() => {
@@ -191,16 +202,6 @@ function CAResult() {
             toast.error("sorry, server error occurred! Try again. ".error, { theme: 'colored' });
         }
     }
-    // if (loading) {
-    //     return (
-    //         <div className="card-body">
-    //             <div className='text-center'>
-    //                 <div className="spinner-border spinner-border-sm text-info" role="status">
-    //                 </div> Loading
-    //             </div>
-    //         </div>
-    //     )
-    // }
 
     // CODE FOR SELECT 2
     const termOptions = [];
@@ -231,57 +232,89 @@ function CAResult() {
     function handleSelect2Input(stateName, selectedItem) {
         setCAResultInput({ ...add_resultInput, [stateName]: selectedItem.value });
     }
-
+    // get page properties for pagination
+    const { data, current_page, per_page, total, from, to, last_page } = result_details
+    const p = {
+        color: "#97a3b9",
+        marginTop: "10px",
+    };
+    if (isfetchLoading) {
+        return (
+            <div className="card-body">
+                <div className='text-center'>
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
+                </div>
+            </div>
+        )
+    }
     var table_record = "";
-    if (result_details.length > 0) {
-        table_record = <div>
-            <table id="example1" className="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>TID</th>
-                        <th>Academic Year</th>
-                        <th>Academic Term</th>
-                        <th>Class</th>
-                        <th>Subject</th>
-                        <th>Sch. Category</th>
-                        <th>Added By</th>
-                        <th>Reg. Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {result_details.map((item, i) => {
-                        return (
-                            <tr key={i}>
-                                <td>{i + 1}</td>
-                                <td>{item.tid_code}</td>
-                                <td>{item.year}</td>
-                                <td>{item.term}</td>
-                                <td>{item.class}</td>
-                                <td>{item.subject}</td>
-                                <td>{item.sch_category}</td>
-                                <td>{item.add_by}</td>
-                                <td>{item.record_date}</td>
-                                {/* <td> <span className='badge bg-danger mr-2' type='button'><i onClick={(e) => deleteResult(e, item.id)} className='fa fa-trash-o text-white'></i></span> */}
-                                <td> <span className="badge bg-danger mr-2" type="button"><i onClick={() => deleteDetails(item.id)} className="fa fa-trash-o text-white"></i></span>
-                                    {" "} {" "}
+    // if (result_details.length > 0) {
+    table_record = <div>
+        <table id="example1" className="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>TID</th>
+                    <th>Academic Year</th>
+                    <th>Academic Term</th>
+                    <th>Class</th>
+                    <th>Subject</th>
+                    <th>Sch. Category</th>
+                    <th>Added By</th>
+                    <th>Reg. Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {result_details.data.map((item, i) => {
+                    return (
+                        <tr key={i}>
+                            <td>{i + from}</td>
+                            <td>{item.tid_code}</td>
+                            <td>{item.year}</td>
+                            <td>{item.term}</td>
+                            <td>{item.class}</td>
+                            <td>{item.subject}</td>
+                            <td>{item.sch_category}</td>
+                            <td>{item.add_by}</td>
+                            <td>{item.record_date}</td>
+                            {/* <td> <span className='badge bg-danger mr-2' type='button'><i onClick={(e) => deleteResult(e, item.id)} className='fa fa-trash-o text-white'></i></span> */}
+                            <td> <span onClick={() => deleteDetails(item.id)} className="badge bg-danger mr-2" type="button"><i className="fa fa-trash-o text-white"></i></span>
+                                {" "} {" "}
 
-                                    <Link to={`view-ca/${item.tid_code}`} data-tip="View CA Result Details " data-place="bottom"><span className='badge bg-info' type='button'><i className='fa fa-eye text-white'></i></span></Link>
-                                </td>
-                            </tr>
-                        )
-                    })
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else if (result_details.length < 1) {
-        table_record = <div className='text-center'>
-            <p>No record at the moment</p>
-        </div>
-    }
+                                <Link to={`view-ca/${item.tid_code}`} data-tip="View CA Result Details " data-place="bottom"><span className='badge bg-info' type='button'><i className='fa fa-eye text-white'></i></span></Link>
+                            </td>
+                        </tr>
+                    )
+                })
+                }
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content align-items-center mr-3">
+                <span className='mr-2'> </span>
+                <span className='mr-3' style={p}>{current_page} - {to} / {total}</span>
+                <Pagination
+                    activePage={current_page}
+                    totalItemsCount={total}
+                    itemsCountPerPage={per_page}
+                    onChange={(pageNumber) => getAllCA(pageNumber)}
+                    renderOnZeroPageCount={null}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                    firstPageText="First"
+                    lastPageText="Last"
+                />
+            </ul>
+        </nav>
+    </div>
+    // }
+    // else if (result_details.length < 1) {
+    //     table_record = <div className='text-center'>
+    //         <p>No record at the moment</p>
+    //     </div>
+    // }
 
     return (
         <>
@@ -304,15 +337,29 @@ function CAResult() {
                     </div>
 
                     <div className="card table-responsive">
-                        <div className="card-header">
+                        <div className="card-header bg-dark">
                             <h3 className="card-title">Current CA result details </h3>
+                            <div className="d-flex justify-content-between">
+                                <p></p>
+                                <span className="badge mr-2" type="button">
+                                    <input name='title' className='form-control form-control-sm' placeholder='Search...' />
+                                </span>
+                            </div>
                         </div>
                         {/* /.card-header */}
                         <div className="card-body">
-                            <div className='text-center'>
-                                {isfetchLoading && <span className="spinner-border spinner-border-sm mr-1 text-info"></span>}
+                            {is_loading && <div className='overlay text-center'>
+                                <div className="spinner-border spinner-border text-info" role="status">
+                                </div>
+                            </div>}
+                            <div className="card table-responsive">
+                                {result_details.data.length ? table_record :
+                                    <div className='text-center'>
+                                        <p>No record at the moment</p>
+                                    </div>}
                             </div>
-                            {table_record}
+
+                            {/* {table_record} */}
                         </div>
                     </div>
                 </div>

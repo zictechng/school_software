@@ -1,26 +1,31 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Pagination from 'react-js-pagination';
+import axios from 'axios';
 
 function AllStudent() {
 
-    document.title = "All Student | ";
+    document.title = "All Student | " + window.companyName;
+    const [isfetchLoading, setIsFetchloading] = useState(true);
     const [student_details, setStudentDetails] = useState([]);
 
-
-    const [isfetchLoading, setIsFetchloading] = useState(false);
-
+    const [is_loading, setIsLoading] = useState(false);
 
     // create a function to fetch all data here
-    const getAllStudent = (e) => {
+    const getAllStudent = (PageNumber = 1) => {
+        setIsLoading(true)
         try {
-            setIsFetchloading(true);
             // let create the api url here
-            axios.get(`/api/fetch_all_student`).then(res => {
+            axios.get(`/api/fetch_all_student?page=${PageNumber}`).then(res => {
                 if (res.data.status === 200) {
                     setStudentDetails(res.data.student_record);
-                    //console.log(res.data.history_record);
+                    // console.log(res.data.student_record);
+                    setIsLoading(false);
+                }
+                // No record found at the moment
+                else if (res.data.status === 404) {
+                    toast.error(res.data.message, { theme: 'colored' });
                 }
                 // login required
                 else if (res.data.status === 401) {
@@ -30,11 +35,13 @@ function AllStudent() {
                     toast.error("sorry, something went wrong! Try again.", { position: 'top-center', theme: 'colored' });
                 }
                 setIsFetchloading(false);
+                setIsLoading(false);
             });
         } catch (error) {
             // Handle the error
             toast.error("sorry, server error! Try again. ".error, { theme: 'colored' });
             setIsFetchloading(false);
+            setIsLoading(false);
         }
     }
     useEffect(() => {
@@ -68,53 +75,79 @@ function AllStudent() {
 
         }
     }
-
+    // get page properties for pagination
+    const { data, current_page, per_page, total, from, to, last_page } = student_details
+    const p = {
+        color: "#97a3b9",
+        marginTop: "10px",
+    };
+    if (isfetchLoading) {
+        return (
+            <div className="card-body">
+                <div className='text-center'>
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
+                </div>
+            </div>
+        )
+    }
     var table_record = "";
-    if (student_details.length > 0) {
-        table_record = <div>
-            <table id="example1" className="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Full Name</th>
-                        <th>Class</th>
-                        <th>Phone No.</th>
-                        <th>DOB</th>
-                        <th>Admin. No.</th>
-                        <th>Reg. Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {student_details.map((item, i) => {
-                        return (
-                            <tr key={i}>
-                                <td>{i + 1}</td>
-                                <td>{item.surname} {item.other_name}</td>
-                                <td>{item.class_name.class_name}</td>
-                                <td>{item.guardia_number}</td>
-                                <td>{item.dob}</td>
-                                <td>{item.st_admin_number}</td>
-                                <td>{item.reg_date}</td>
-                                <td> <span className='badge bg-danger mr-2' type='button'><i onClick={(e) => deleteStudent(e, item.id)} className='fa fa-trash-o text-white'></i></span>
-                                    {" "} {" "}
-                                    <Link to={`edit-student/${item.id}`}><span className='badge bg-primary mr-2' type='button'><i className='fa fa-pencil text-white'></i></span></Link>
-                                    {" "}
-                                    <Link to={`view-student/${item.id}`}><span className='badge bg-info' type='button'><i className='fa fa-eye text-white'></i></span></Link>
-                                </td>
-                            </tr>
-                        )
-                    })
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else if (student_details.length < 1) {
-        table_record = <div className='text-center'>
-            <p>No record at the moment</p>
-        </div>
-    }
+    table_record = <div>
+        <table id="example1" className="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Full Name</th>
+                    <th>Class</th>
+                    <th>Phone No.</th>
+                    <th>DOB</th>
+                    <th>Admin. No.</th>
+                    <th>Reg. Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {student_details.data.map((item, i) => {
+                    return (
+                        <tr key={i}>
+                            <td>{i + from}</td>
+                            <td>{item.surname} {item.other_name}</td>
+                            <td>{item.class_name.class_name}</td>
+                            <td>{item.guardia_number}</td>
+                            <td>{item.dob}</td>
+                            <td>{item.st_admin_number}</td>
+                            <td>{item.reg_date}</td>
+                            <td> <span onClick={(e) => deleteStudent(e, item.id)} className='badge bg-danger mr-2' type='button'><i className='fa fa-trash-o text-white'></i></span>
+                                {" "} {" "}
+                                <Link to={`edit-student/${item.id}`}><span className='badge bg-primary mr-2' type='button'><i className='fa fa-pencil text-white'></i></span></Link>
+                                {" "}
+                                <Link to={`view-student/${item.id}`}><span className='badge bg-info' type='button'><i className='fa fa-eye text-white'></i></span></Link>
+                            </td>
+                        </tr>
+                    )
+                })
+                }
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content align-items-center mr-3">
+                <span className='mr-2'> </span>
+                <span className='mr-3' style={p}>{current_page} - {to} / {total}</span>
+                <Pagination
+                    activePage={current_page}
+                    totalItemsCount={total}
+                    itemsCountPerPage={per_page}
+                    onChange={(pageNumber) => getAllStudent(pageNumber)}
+                    renderOnZeroPageCount={null}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                    firstPageText="First"
+                    lastPageText="Last"
+                />
+            </ul>
+        </nav>
+    </div>
+
     return (
         <>
             <div className="content-header">
@@ -134,57 +167,30 @@ function AllStudent() {
                     </div>
 
                     <div className="card table-responsive">
-                        <div className="card-header">
+                        <div className="card-header bg-dark">
                             <h3 className="card-title">Current student details</h3>
+                            <div className="d-flex justify-content-between">
+                                <p></p>
+                                <span className="badge mr-2" type="button">
+                                    <input name='title' className='form-control form-control-sm' placeholder='Search...' />
+                                </span>
+                            </div>
                         </div>
                         {/* /.card-header */}
                         <div className="card-body">
-                            <div className='text-center'>
-                                {isfetchLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                            {is_loading && <div className='overlay text-center'>
+                                <div className="spinner-border spinner-border text-info" role="status">
+                                </div>
+                            </div>}
+                            <div className="card table-responsive">
+                                {student_details.data.length ? table_record :
+                                    <div className='text-center'>
+                                        <p>No record at the moment</p>
+                                    </div>}
                             </div>
-                            {table_record}
-                            {/* <table id="example1" className="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Full Name</th>
-                                        <th>Class</th>
-                                        <th>Phone No.</th>
-                                        <th>DOB</th>
-                                        <th>Admin. No.</th>
-                                        <th>Reg. Date</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Internet
-                                            Explorer 4.0
-                                        </td>
-                                        <td>Win 95+</td>
-                                        <td> 4</td>
-                                        <td>X</td>
-                                        <td>X</td>
-                                        <td>X</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>Internet
-                                            Explorer 5.0
-                                        </td>
-                                        <td>Win 95+</td>
-                                        <td>5</td>
-                                        <td>C</td>
-                                        <td>X</td>
-                                        <td>X</td>
-                                        <td></td>
-                                    </tr>
 
-                                </tbody>
+                            {/* {table_record} */}
 
-                            </table> */}
                         </div>
                     </div>
                 </div>

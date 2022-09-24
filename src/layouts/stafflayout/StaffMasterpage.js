@@ -12,11 +12,11 @@ import axios from "axios";
 import { toast } from 'react-toastify';
 import staff_routes from '../../routes/staffRoutes';
 import { useHistory } from 'react-router-dom';
-const token = localStorage.getItem('auth_token');
+const token = sessionStorage.getItem('auth_token');
 
 export default function StaffMasterpage() {
     const history = useHistory();
-    if (!localStorage.getItem('auth_token')) {
+    if (!sessionStorage.getItem('auth_token')) {
         history.push("/login");
     }
     const [isLoading, setIsloading] = useState(false);
@@ -29,8 +29,8 @@ export default function StaffMasterpage() {
         axios.post(`/api/logout`).then(res => {
             /* check if logout is successful and clear all data store */
             if (res.data.status === 200) {
-                localStorage.removeItem('auth_token');
-                localStorage.removeItem('auth_loggedID');
+                sessionStorage.removeItem('auth_token');
+                sessionStorage.removeItem('auth_loggedID');
                 toast.success(res.data.message, { theme: 'colored' });
                 document.getElementById("logoutModal").classList.remove("show");
                 document.querySelectorAll(".modal-backdrop")

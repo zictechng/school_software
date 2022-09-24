@@ -13,7 +13,7 @@ const token = localStorage.getItem('auth_token');
 function Dashboardpage() {
     const [logged_state, setLoggedState] = useState([]);
 
-    document.title = "Dashboard | ";
+    document.title = "Dashboard | " + window.companyName;
     const date = new Date();
 
     const history = useHistory();
@@ -24,11 +24,13 @@ function Dashboardpage() {
 
     const [isLoggedIn, setisLoggedIn] = useState(true);
 
-    const { checkLoggin, loggin_state, user, loggin_check } = useContext(UserContext);
+    const { checkLoggin, loggin_state, user, loggin_check, schLogo, userip } = useContext(UserContext);
     const [logged_check] = checkLoggin;
     const [user_loggin_state] = loggin_state;
     const [user_details] = user;
     const [logged_status] = loggin_check
+    const [logo_school] = schLogo
+    const [user_ip] = userip;
     const [user_info, setUserInfo] = useState([]);
 
     const [showModal, setShowModal] = useState(false);
@@ -58,13 +60,13 @@ function Dashboardpage() {
                 <div className="container-fluid">
                     <div className="row mb-2">
                         <div className="col-sm-6">
-                            <h1 className="m-0">Dashboard {logged_status.logg_action}
+                            <h1 className="m-0">Dashboard
 
                             </h1>
                         </div>{/* /.col */}
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-                                <li><span className="badge badge-danger mr-3"> Last Login: {todayDate} {dateTime} | IP: 192.0.987.07</span></li>
+                                <li><span className="badge badge-danger mr-3"> Last Login: {todayDate} {dateTime} | IP: {user_ip !== undefined ? user_ip : "No IP"}</span></li>
                                 <li className='mr-3'><button type="button" className="btn btn-block btn-info btn-sm">Student Portal</button></li>
                                 <li className='mr-3'><button type="button" className="btn btn-block btn-dark btn-sm">Visit Website</button></li>
                             </ol>
@@ -92,7 +94,7 @@ function Dashboardpage() {
                     <div className="card-footer card-comments">
                         <div className="comment-text">
                             <span className="username">
-                                LiftSoft Edu
+                                {logo_school.sch_name_short}
                                 {/* <span className="text-muted float-right">8:03 PM Today</span> */}
                             </span>
                             It is a long established fact that a good software help you addressed and solve your bussiness need.

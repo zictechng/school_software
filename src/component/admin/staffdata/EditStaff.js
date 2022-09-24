@@ -463,46 +463,43 @@ function EditStaff(props) {
                                     </button>
                                 </div>
                             </form>
-
                         </div>
-
-                        <div className="card">
-                            <div className="card-header">
-                                <h3 className="card-title text-danger">Update Password Details</h3>
-                            </div>
-                            {/* /.card-header */}
-                            <div className="card-body p-3">
-                                <form onSubmit={submitPassword}>
-                                    <div className="row">
-                                        <div className="col-sm-5">
-                                            {/* text input */}
-                                            <div className="form-group">
-                                                <label>New Password</label>
-                                                <input type="password" name='new_password' onChange={handleInputPassword} value={pass_staff.new_password} className="form-control" placeholder="New Password" />
-                                                <small className='text-danger'>{list_error.new_password}</small>
-                                            </div>
-                                        </div>
-                                        <div className="col-sm-5">
-                                            <div className="form-group">
-                                                <label>Confirm Password</label>
-                                                <input type="text" name='confirm_password' onChange={handleInputPassword} value={pass_staff.confirm_password} className="form-control" placeholder="Confirm Password" />
-                                                <small className='text-danger'>{list_error.confirm_password}</small>
-                                            </div>
+                    </div>
+                    <div className="card">
+                        <div className="card-header">
+                            <h3 className="card-title text-danger">Update Password Details</h3>
+                        </div>
+                        {/* /.card-header */}
+                        <div className="card-body p-3">
+                            <form onSubmit={submitPassword}>
+                                <div className="row">
+                                    <div className="col-sm-5">
+                                        {/* text input */}
+                                        <div className="form-group">
+                                            <label>New Password</label>
+                                            <input type="password" name='new_password' onChange={handleInputPassword} value={pass_staff.new_password} className="form-control" placeholder="New Password" />
+                                            <small className='text-danger'>{list_error.new_password}</small>
                                         </div>
                                     </div>
-                                    <div className="modal-footer">
-
-                                        <button type='submit' disabled={pLoading} className="btn btn-success">
-                                            {pLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                                            Update Password
-                                        </button>
+                                    <div className="col-sm-5">
+                                        <div className="form-group">
+                                            <label>Confirm Password</label>
+                                            <input type="text" name='confirm_password' onChange={handleInputPassword} value={pass_staff.confirm_password} className="form-control" placeholder="Confirm Password" />
+                                            <small className='text-danger'>{list_error.confirm_password}</small>
+                                        </div>
                                     </div>
-                                </form>
+                                </div>
+                                <div className="modal-footer">
 
-                            </div>
-                            {/* /.card-body */}
+                                    <button type='submit' disabled={pLoading} className="btn btn-success">
+                                        {pLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                        Update Password
+                                    </button>
+                                </div>
+                            </form>
+
                         </div>
-
+                        {/* /.card-body */}
                     </div>
                 </div>
             </div>

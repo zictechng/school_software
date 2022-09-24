@@ -191,13 +191,14 @@ export default function Dash2() {
                                     <span className="info-box-number">0</span>
                                 </div>
                             </div>
-                            <div className="info-box mb-3 bg-success">
+                            <Link to="/admin/birthday-list"><div className="info-box mb-3 bg-success">
                                 <span className="info-box-icon"><i className="fa fa-gift"></i></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">Birth Day bell</span>
                                     <span className="info-box-number">{birthday.birthday_number}</span>
                                 </div>
                             </div>
+                            </Link>
                             <div className="info-box mb-3 bg-danger">
                                 <span className="info-box-icon"><i className="fas fa-cloud-download-alt" /></span>
                                 <div className="info-box-content">

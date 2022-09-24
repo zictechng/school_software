@@ -12,14 +12,14 @@ import Sidemenu from './Sidemenu';
 import axios from "axios";
 import { toast } from 'react-toastify';
 import routes from '../../routes/routes';
-const token = localStorage.getItem('auth_token');
+const token = sessionStorage.getItem('auth_token');
 import { UserContext } from '../../context/UserContext';
 import { useHistory } from 'react-router-dom';
 
 export default function Masterpage() {
 
     const history = useHistory();
-    if (!localStorage.getItem('auth_token')) {
+    if (!sessionStorage.getItem('auth_token')) {
         history.push("/login");
     }
 
@@ -42,8 +42,8 @@ export default function Masterpage() {
         axios.post(`/api/logout`).then(res => {
             /* check if logout is successful and clear all data store */
             if (res.data.status === 200) {
-                localStorage.removeItem('auth_token');
-                localStorage.removeItem('auth_loggedID');
+                sessionStorage.removeItem('auth_token');
+                sessionStorage.removeItem('auth_loggedID');
                 toast.success(res.data.message, { theme: 'colored' });
                 document.getElementById("logoutModal").classList.remove("show");
                 document.querySelectorAll(".modal-backdrop")
@@ -59,8 +59,7 @@ export default function Masterpage() {
 
     }
     useEffect(() => {
-        const userID = localStorage.getItem("auth_loggedID");
-
+        const userID = sessionStorage.getItem("auth_loggedID");
         axios.get(`/api/authenticate_user/${userID}`).then(res => {
             /* check if logout is successful and clear all data store */
             if (res.data.status === 200) {

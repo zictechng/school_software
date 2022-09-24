@@ -132,7 +132,7 @@ function Assignment() {
                         {
                             pin_status = <span style={p}>Deleted</span>
                             file_link =
-                                <Link to={`/` + item.assign_file} data-tip="View attachment" data-place="bottom" target="_blank"><i className='fas fa-paperclip'></i></Link>
+                                <a href={item.assign_file} data-tip="View attachment" data-place="bottom" target="_blank"><i className='fas fa-paperclip'></i></a>
 
                         }
 

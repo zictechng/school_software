@@ -77,7 +77,7 @@ function ViewStudent(props) {
     }
     // check if user have profile image and show it else, show default one.
     const myphoto = (display_image.st_image !== undefined && display_image.st_image !== null) ?
-        (display_image.uploadedImage ? display_image.st_image : `http://localhost:8000/` + display_image.st_image) : Image;
+        (display_image.uploadedImage ? display_image.st_image : window.BASE_URL + display_image.st_image) : Image;
     // ends here
 
     // create a function to fetch class data here
@@ -105,11 +105,18 @@ function ViewStudent(props) {
 
     if (loading) {
         return (
-            <div style={style}>
-                <div className="spinner-border spinner-border-sm text-info" role="status">
-                </div> Loading
+            <div className="card-body">
+                <div className='text-center'>
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div> Loading
+                </div>
             </div>
+            // <div style={style}>
+            //     <div className="spinner-border spinner-border text-info" role="status">
+            //     </div> Loading
+            // </div>
         )
+
     }
     return (
         <>
@@ -121,9 +128,9 @@ function ViewStudent(props) {
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-
-                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
                                 <li className='mr-3'><Link to='/admin/student'><button type="button" className="btn btn-block btn-info btn-sm">View Student</button></Link> </li>
+                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
+
                             </ol>
                         </div>
                     </div>

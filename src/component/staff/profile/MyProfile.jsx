@@ -122,7 +122,7 @@ function MyProfile() {
                 <div className="container-fluid">
                     <div className="row mb-2">
                         <div className="col-sm-6">
-                            <h3 className="m-0">Staff profile details <b>{process.env.NODE_ENV}</b> mode.</h3>
+                            <h3 className="m-0">Staff profile details </h3>
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">

@@ -261,7 +261,7 @@ function PsychomotorPost() {
                                             </div>
                                         </div>
                                         <div className="row">
-                                            <div className="col-sm-10">
+                                            <div className="col-sm-6">
                                                 <div className="form-group">
                                                     <label>Class</label>
                                                     <Select

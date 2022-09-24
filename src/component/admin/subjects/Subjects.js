@@ -1,17 +1,20 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Modal, Button } from 'react-bootstrap';
+import Pagination from 'react-js-pagination';
+import axios from 'axios';
 
 function Subjects() {
-    document.title = "Add Subject | ";
+    document.title = "Add Subject | " + window.companyName;
     const [subject_detail, setSubjectDetails] = useState([]);
 
     const [isLoading, setIsloading] = useState(false);
     const [isclassLoading, setIsClassloading] = useState(false);
     const [iseditLoading, setIsEditloading] = useState(false);
+    const [isfetchLoading, setIsFetchloading] = useState(true);
 
+    const [isloading, setIs_Loading] = useState(false);
 
     const [subjectInput, setSubject] = useState({
         subject_name: '',
@@ -122,15 +125,21 @@ function Subjects() {
             setIsloading(false);
         });
     }
-
+    var PageNumber = 1;
     // create a function to fetch history here
-    const getSubject = (e) => {
-        setIsClassloading(true);
+    const getSubject = (PageNumber) => {
+        setIs_Loading(true);
         // let create the api url here
-        axios.get(`/api/fetch_subject`).then(res => {
+        axios.get(`/api/fetch_subject?page=${PageNumber}`).then(res => {
             if (res.data.status === 200) {
                 setSubjectDetails(res.data.subject_record);
+                setIs_Loading(false);
                 //console.log(res.data.history_record);
+            }
+            //data not found
+            else if (res.data.status === 404) {
+                toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
+                setIs_Loading(false);
             }
             // login required
             else if (res.data.status === 401) {
@@ -139,15 +148,14 @@ function Subjects() {
             else {
                 toast.error("sorry, something went wrong! Try again.", { position: 'top-center', theme: 'colored' });
             }
-            setIsClassloading(false);
+            setIsFetchloading(false);
+            setIs_Loading(false);
         });
     }
     useEffect(() => {
         // call the function here
         getSubject();
-
         return () => {
-
         };
     }, []);
 
@@ -210,48 +218,81 @@ function Subjects() {
         setDeleteID(delete_id);
         setDeleteDetails(true);
     }
+    // get page properties for pagination
+    const { data, current_page, per_page, total, from, to, last_page } = subject_detail
+    const p = {
+        color: "#97a3b9",
+        marginTop: "10px",
+    };
+    if (isfetchLoading) {
+        return (
+            <div className="card-body">
+                <div className='text-center'>
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
+                </div>
+            </div>
+        )
+    }
     /* create veriable to hold the result data */
 
     var table_record = "";
-    if (subject_detail.length > 0) {
-        table_record = <div>
-            <table id="example1" className="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Subject Name</th>
-                        <th>Added By</th>
-                        <th>Status</th>
-                        <th>Created Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {subject_detail.map((item, i) => {
-                        return (
-                            <tr key={i}>
-                                <td>{i + 1}</td>
-                                <td>{item.subject_name}</td>
-                                <td>{item.sub_addedby}</td>
-                                <td>{item.sub_status}</td>
-                                <td>{item.sub_date}</td>
-                                <td> <span className='badge bg-danger mr-2'><i onClick={() => deleteAction(item.id)} className='fa fa-trash-o text-white' type='button'></i></span>
-                                    {" "} {" "}
-                                    <span className='badge bg-primary'><i onClick={() => editSubject(item.id)} className='fa fa-pencil text-white' type='button' data-toggle="modal" data-target="#Editsubject_modal"></i></span>
-                                </td>
-                            </tr>
-                        )
-                    })
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else if (subject_detail.length < 1) {
-        table_record = <div className='text-center'>
-            <p>No record at the moment</p>
-        </div>
-    }
+    // if (subject_detail.length > 0) {
+    table_record = <div>
+        <table id="example1" className="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Subject Name</th>
+                    <th>Added By</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {subject_detail.data.map((item, i) => {
+                    return (
+                        <tr key={i}>
+                            <td>{i + from}</td>
+                            <td>{item.subject_name}</td>
+                            <td>{item.sub_addedby}</td>
+                            <td>{item.sub_status}</td>
+                            <td>{item.sub_date}</td>
+                            <td> <span onClick={() => deleteAction(item.id)} className='badge bg-danger mr-2'><i className='fa fa-trash-o text-white' type='button'></i></span>
+                                {" "} {" "}
+                                <span onClick={() => editSubject(item.id)} className='badge bg-primary'><i className='fa fa-pencil text-white' type='button' data-toggle="modal" data-target="#Editsubject_modal"></i></span>
+                            </td>
+                        </tr>
+                    )
+                })
+                }
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content align-items-center mr-3">
+                <span className='mr-2'> </span>
+                <span className='mr-3' style={p}>{current_page} - {to} / {total}</span>
+                <Pagination
+                    activePage={current_page}
+                    totalItemsCount={total}
+                    itemsCountPerPage={per_page}
+                    onChange={(pageNumber) => getSubject(pageNumber)}
+                    renderOnZeroPageCount={null}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                    firstPageText="First"
+                    lastPageText="Last"
+                />
+            </ul>
+        </nav>
+    </div>
+    // }
+    // else if (subject_detail.length < 1) {
+    //     table_record = <div className='text-center'>
+    //         <p>No record at the moment</p>
+    //     </div>
+    // }
 
     return (
         <>
@@ -264,23 +305,36 @@ function Subjects() {
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-
-                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
                                 <li className='mr-3'><button type="button" className="btn btn-block btn-info btn-sm" data-toggle="modal" data-target="#Addschool_subject">Create New Subject</button></li>
+                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
+
                             </ol>
                         </div>
                     </div>
 
                     <div className="card table-responsive">
-                        <div className="card-header">
+                        <div className="card-header bg-dark">
                             <h3 className="card-title">Current subject details</h3>
+                            <div className="d-flex justify-content-between">
+                                <p></p>
+                                <span className="badge mr-2" type="button">
+                                    <input name='title' className='form-control form-control-sm' placeholder='Search...' />
+                                </span>
+                            </div>
                         </div>
                         {/* /.card-header */}
                         <div className="card-body">
-                            <div className='text-center'>
-                                {isclassLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                            {isloading && <div className='overlay text-center'>
+                                <div className="spinner-border spinner-border text-info" role="status">
+                                </div>
+                            </div>}
+                            <div className="card table-responsive">
+                                {subject_detail.data.length ? table_record :
+                                    <div className='text-center'>
+                                        <p>No record at the moment</p>
+                                    </div>}
                             </div>
-                            {table_record}
+                            {/* {table_record} */}
                         </div>
 
                     </div>

@@ -6,15 +6,20 @@ import ReactTooltip from 'react-tooltip';
 import Select from "react-select";
 
 function SingleResult() {
+    document.title = "Manage Single Result Entry | " + window.companyName;
     const history = useHistory();
     const [loading, setLoading] = useState(true);
     const [isLoading, setIsloading] = useState(false);
     const [all_studentDetails, setAllStudentDetails] = useState([]);
+    const [allstudentDetails, setStudentDetails] = useState([]);
     const [schoolYears, setSchoolYear] = useState([]);
     const [schoolTerm, setSchoolTerm] = useState([]);
     const [all_class, setAllClass] = useState([]);
     const [sch_category, setSchCatgory] = useState([]);
     const [all_category, setCatogory] = useState([]);
+    const [class_id, setClassId] = useState([]);
+
+    const [clasSelect, setClassSelect] = useState([]);
 
     const [all_subjects, setAllSubjects] = useState([]);
     const [validationErrors, setValidationErrors] = useState(null);
@@ -38,17 +43,21 @@ function SingleResult() {
 
     const handleFormDataChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+
     };
+    //console.log(formData.class);
+
 
     // create a function to fetch class data here
     useEffect(() => {
-        axios.get(`/api/fetch_all_student`).then((res) => {
+        axios.get(`/api/fetch_all_student_result`).then((res) => {
             if (res.data.status === 200) {
-                setAllStudentDetails(res.data.student_record);
+                setStudentDetails(res.data.student_record);
             }
             setLoading(false);
         });
     }, []);
+
 
     // create a function to fetch class data here
     useEffect(() => {
@@ -126,7 +135,14 @@ function SingleResult() {
         try {
             // let create the api url here
             axios
-                .post(`/api/single_result_save`, { data: rows, ...formData })
+                .post(`/api/single_result_save`, {
+                    data: rows,
+                    year: formData.year,
+                    term: formData.term,
+                    subject: formData.subject,
+                    school_category: formData.school_category,
+                    class: class_id,
+                })
                 .then((res) => {
                     if (res.data.status === 200) {
                         setIsloading(false);
@@ -156,6 +172,19 @@ function SingleResult() {
             });
         }
     };
+    // this will be called when class select dropdown is change and use it to fetch student base on
+    // the class id selected.
+    // const handleClassChange = (e) => {
+    //     var class_data = e.target.value;
+    //     setClassId(e.target.value);
+    //     // let create the api url here
+    //     axios.post(`/api/fetch_all_student_name/`, { id: class_data }).then(res => {
+    //         if (res.data.status === 200) {
+    //             setAllStudentDetails(res.data.allstudent_list);
+    //         }
+    //     });
+
+    // };
 
     // CODE FOR SELECT 2
     const termOptions = [];
@@ -187,15 +216,29 @@ function SingleResult() {
         setFormData({ ...formData, [stateName]: selectedItem.value });
     }
 
+    // this will be called when class select dropdown is change and use it to fetch student base on
+    // the class id selected.
+    function handleSelectClassnput(stateName, selectedItem) {
+        //alert(selectedItem.value);
+        setClassId(selectedItem.value);
+        var class_data = selectedItem.value;
+        // let create the api url here
+        axios.post(`/api/fetch_all_student_name/`, { id: class_data }).then(res => {
+            if (res.data.status === 200) {
+                setAllStudentDetails(res.data.allstudent_list);
+            }
+        });
+    }
+
+
     if (loading) {
         return (
             <div className="card-body">
                 <div className="text-center">
                     <div
-                        className="spinner-border spinner-border-sm text-info"
+                        className="spinner-border spinner-border text-info"
                         role="status"
-                    ></div>{" "}
-                    Loading
+                    ></div>
                 </div>
             </div>
         );
@@ -206,20 +249,10 @@ function SingleResult() {
                 <div className="container-fluid">
                     <div className="row mb-2">
                         <div className="col-sm-6">
-                            <h4 className="m-0">Single Result Entry</h4>
+                            <h4 className="m-0">Single Result Entry {class_id} </h4>
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-                                <li className="mr-3">
-                                    <Link to="/admin/index">
-                                        <button
-                                            type="button"
-                                            className="btn btn-block btn-dark btn-sm" data-tip="Dashboard" data-place="bottom"
-                                        >
-                                            <i className="fa fa-home"></i>{" "}
-                                        </button>
-                                    </Link>
-                                </li>
                                 <li className="mr-3">
                                     <Link to="/admin/result">
                                         <button
@@ -229,6 +262,16 @@ function SingleResult() {
                                             View Result
                                         </button>
                                     </Link>{" "}
+                                </li>
+                                <li className="mr-3">
+                                    <Link to="/admin/index">
+                                        <button
+                                            type="button"
+                                            className="btn btn-block btn-dark btn-sm" data-tip="Dashboard" data-place="bottom"
+                                        >
+                                            <i className="fa fa-home"></i>{" "}
+                                        </button>
+                                    </Link>
                                 </li>
                             </ol>
                         </div>
@@ -257,6 +300,7 @@ function SingleResult() {
                                                 isDisabled={false}
                                                 isLoading={false}
                                                 onChange={(e) => handleSelect2Input("subject", e)}
+                                                placeholder="Select Subject"
                                             />
                                             {validationErrors &&
                                                 validationErrors[`subject`] ? (
@@ -278,6 +322,7 @@ function SingleResult() {
                                                 isDisabled={false}
                                                 isLoading={false}
                                                 onChange={(e) => handleSelect2Input("term", e)}
+                                                placeholder="Select Term"
                                             />
                                             {validationErrors &&
                                                 validationErrors[`term`] ? (
@@ -301,6 +346,7 @@ function SingleResult() {
                                                 isDisabled={false}
                                                 isLoading={false}
                                                 onChange={(e) => handleSelect2Input("year", e)}
+                                                placeholder="Select Year"
                                             />
                                             {validationErrors &&
                                                 validationErrors[`year`] ? (
@@ -314,6 +360,26 @@ function SingleResult() {
                                     </div>
                                     <div className="col-sm-4">
                                         <div className="form-group">
+                                            {/* <select
+                                                name="class"
+                                                className="form-control"
+                                                onChange={(e) => handleClassChange(e)}
+                                                required>
+                                                <option>Select Class</option>
+                                                {all_class.map((item) => {
+                                                    return (
+                                                        <option key={item.id} value={item.id} >{item.class_name}</option>
+                                                    );
+                                                })}
+                                            </select>
+                                            {validationErrors &&
+                                                validationErrors[`class`] ? (
+                                                <span className="text-danger">
+                                                    {validationErrors[`class`]}
+                                                </span>
+                                            ) : (
+                                                ""
+                                            )} */}
                                             <Select
                                                 name="class"
                                                 options={classOptions}
@@ -321,7 +387,8 @@ function SingleResult() {
                                                 isSearchable={true}
                                                 isDisabled={false}
                                                 isLoading={false}
-                                                onChange={(e) => handleSelect2Input("class", e)}
+                                                onChange={(e) => handleSelectClassnput("class", e)}
+                                                placeholder="Select Class"
                                             />
                                             {validationErrors &&
                                                 validationErrors[`class`] ? (
@@ -342,6 +409,7 @@ function SingleResult() {
                                                 isSearchable={true}
                                                 isDisabled={false}
                                                 isLoading={false}
+                                                placeholder="Select Category"
                                                 onChange={(e) =>
                                                     handleSelect2Input("school_category", e)
                                                 }
@@ -392,10 +460,10 @@ function SingleResult() {
                                                     className="form-control"
                                                     onChange={(e) => handleSelectChange(e, i)}
                                                 >
-                                                    <option>Select</option>
+                                                    <option>Select Student</option>
                                                     {all_studentDetails.map((item) => {
                                                         return (
-                                                            <option value={item.st_admin_number} key={item.id}>{item.other_name} {item.surname}</option>
+                                                            <option key={item.id} value={item.st_admin_number} >{item.other_name} {item.surname}</option>
                                                         );
                                                     })}
                                                 </select>

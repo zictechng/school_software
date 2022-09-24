@@ -168,7 +168,7 @@ function ViewCADetails(props) {
     // create a function to fetch class data here
     useEffect(() => {
         setLoading(true);
-        axios.get(`/api/fetch_subject`).then(res => {
+        axios.get(`/api/get_all_subject`).then(res => {
             if (res.data.status === 200) {
                 setGetAllSubject(res.data.subject_record);
             }
@@ -279,8 +279,8 @@ function ViewCADetails(props) {
         return (
             <div className="card-body">
                 <div className='text-center'>
-                    <div className="spinner-border spinner-border-sm text-info" role="status">
-                    </div> Loading
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
                 </div>
             </div>
         )
@@ -318,8 +318,8 @@ function ViewCADetails(props) {
                                             <div className="row">
                                                 <div className="col-12">
                                                     <h4>
-                                                        <i className="fas fa-th" /> <a style={p}> Subjects:  {get_subject.term_subject.subject_name} | Class: {get_class.class_name.class_name}</a>
-                                                        <small className="float-right">Btach ID: <a style={p}> {get_subject.rst_tid}</a></small>
+                                                        <i className="fas fa-th" /> <a style={p}> Subjects:  {get_subject === null ? " " : get_subject.term_subject.subject_name} | Class: {get_class === null ? " " : get_class.class_name.class_name}</a>
+                                                        <small className="float-right">Btach ID: <a style={p}> {get_subject === null ? " " : get_subject.rst_tid}</a></small>
                                                     </h4>
                                                 </div>
                                             </div>
@@ -399,7 +399,7 @@ function ViewCADetails(props) {
                                                                             <td>{item.ca_total}</td>
                                                                             <td>{item.sch_year.academic_name}</td>
                                                                             <td>{item.sch_term.term_name}</td>
-                                                                            <td>{item.sch_category.sc_name}</td>
+                                                                            <td>{item.sch_category === null ? "" : item.sch_category.sc_name}</td>
                                                                             <td>{pin_status}</td>
                                                                             <td>{item.rst_addby}</td>
                                                                             <td>{item.rst_date}</td>

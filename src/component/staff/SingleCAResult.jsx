@@ -11,10 +11,13 @@ function SingleCAResult() {
     const [loading, setLoading] = useState(true);
     const [isLoading, setIsloading] = useState(false);
     const [all_studentDetails, setAllStudentDetails] = useState([]);
+    const [allstudentDetails, setStudentDetails] = useState([]);
     const [schoolYears, setSchoolYear] = useState([]);
     const [schoolTerm, setSchoolTerm] = useState([]);
     const [all_class, setAllClass] = useState([]);
     const [sch_category, setSchCatgory] = useState([]);
+
+    const [class_id, setClassId] = useState([]);
 
     const [all_subjects, setAllSubjects] = useState([]);
     const [validationErrors, setValidationErrors] = useState(null);
@@ -40,9 +43,9 @@ function SingleCAResult() {
 
     // create a function to fetch class data here
     useEffect(() => {
-        axios.get(`/api/fetch_all_student`).then((res) => {
+        axios.get(`/api/fetch_all_student_result`).then((res) => {
             if (res.data.status === 200) {
-                setAllStudentDetails(res.data.student_record);
+                setStudentDetails(res.data.student_record);
             }
             setLoading(false);
         });
@@ -121,7 +124,13 @@ function SingleCAResult() {
         try {
             // let create the api url here
             axios
-                .post(`/api/my_single_ca_save`, { data: rows, ...formData })
+                .post(`/api/my_single_ca_save`, {
+                    data: rows,
+                    year: formData.year,
+                    term: formData.term,
+                    subject: formData.subject,
+                    class: class_id,
+                })
                 .then((res) => {
                     if (res.data.status === 200) {
                         setIsloading(false);
@@ -173,6 +182,19 @@ function SingleCAResult() {
     });
     function handleSelect2Input(stateName, selectedItem) {
         setFormData({ ...formData, [stateName]: selectedItem.value });
+    }
+    // this will be called when class select dropdown is change and use it to fetch student base on
+    // the class id selected.
+    function handleSelectClassnput(stateName, selectedItem) {
+        //alert(selectedItem.value);
+        setClassId(selectedItem.value);
+        var class_data = selectedItem.value;
+        // let create the api url here
+        axios.post(`/api/fetch_all_student_name/`, { id: class_data }).then(res => {
+            if (res.data.status === 200) {
+                setAllStudentDetails(res.data.allstudent_list);
+            }
+        });
     }
     const p = {
         color: "#97a3b9",
@@ -323,7 +345,7 @@ function SingleCAResult() {
                                                 isDisabled={false}
                                                 isLoading={false}
                                                 placeholder="Select Class"
-                                                onChange={(e) => handleSelect2Input("class", e)}
+                                                onChange={(e) => handleSelectClassnput("class", e)}
                                             />
                                             {validationErrors &&
                                                 validationErrors[`class`] ? (
@@ -370,7 +392,7 @@ function SingleCAResult() {
                                                     className="form-control"
                                                     onChange={(e) => handleSelectChange(e, i)}
                                                 >
-                                                    <option>Select</option>
+                                                    <option>Select Student</option>
                                                     {all_studentDetails.map((item) => {
                                                         return (
                                                             <option value={item.st_admin_number} key={item.id}>{item.other_name} {item.surname}</option>

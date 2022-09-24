@@ -6,7 +6,7 @@ import axios from 'axios';
 import ReactToPrint from "react-to-print";
 
 function ViewAssignment(props) {
-    document.title = "View Subject Result Details | " + window.companyName;
+    document.title = "View Assignment Result Details | " + window.companyName;
     const componentRef = useRef(null);
 
     const history = useHistory();
@@ -477,22 +477,7 @@ function ViewAssignment(props) {
                                     <small className='text-danger'>{list_error.assign_submission_date}</small>
                                 </div>
                             </div>
-                            {/* <div className="col-sm-6">
-                                <div className="form-group">
-                                    <label style={p}>Class</label>
-                                    <select name='assign_class' onChange={handleEdit} value={subjectInputs.assign_class_id} className='form-control'>
-                                        <option>{subjectInputs.assign_class}</option>
-                                        {
-                                            all_class.map((item) => {
-                                                return (
-                                                    <option value={item.id} key={item.id}>{item.cls__class_name}</option>
-                                                )
-                                            })
-                                        }
-                                    </select>
-                                    <small className='text-danger'>{list_error.assign_class}</small>
-                                </div>
-                            </div> */}
+
                             <div className="col-sm-6">
                                 <div className="form-group">
                                     <label style={p}>Subject</label>
@@ -521,11 +506,11 @@ function ViewAssignment(props) {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-sm-10">
+                            <div className="col-sm-12">
                                 <div className="form-group">
                                     <label style={p}>Message Body</label>
                                     <textarea name='assign_body' onChange={handleEdit}
-                                        value={subjectInputs.assign_body} className="form-control" placeholder="Type your assignment message here" />
+                                        value={subjectInputs.assign_body} className="form-control" style={{ height: 100 }} placeholder="Type your assignment message here" />
                                     <small className='text-danger'>{list_error.assign_body}</small>
                                 </div>
                             </div>

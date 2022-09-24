@@ -2,8 +2,10 @@ import AddCAResult from "../component/staff/AddCAResult";
 import AddComments from "../component/staff/AddComments";
 import AddStudentResult from "../component/staff/AddStudentResult";
 import Assignment from "../component/staff/Assignment";
+import AssignmentSubmission from "../component/staff/AssignmentSubmission";
 import Attendance from "../component/staff/Attendance";
 import CAResult from "../component/staff/CAResult";
+import CheckViewResult from "../component/staff/CheckViewResult";
 import Comment from "../component/staff/Comment";
 import Dashboardpage from "../component/staff/dashboard/Dashboardpage";
 import EnterCAResult from "../component/staff/EnterCAResult";
@@ -14,6 +16,7 @@ import MessageInbox from "../component/staff/messagebox/MessageInbox";
 import ReadMessage from "../component/staff/messagebox/ReadMessage";
 import MyStudent from "../component/staff/MyStudent";
 import PostAssignment from "../component/staff/PostAssignment";
+import PrintStudentResult from "../component/staff/PrintStudentResult";
 import ProcessResultPosition from "../component/staff/ProcessResultPosition";
 import MyProfile from "../component/staff/profile/MyProfile";
 import PsychomotorDomain from "../component/staff/PsychomotorDomain";
@@ -68,7 +71,10 @@ const staff_routes = [
     { path: '/staff/message', exact: true, name: 'MessageInbox', component: MessageInbox },
     { path: '/staff/profile', exact: true, name: 'MyProfile', component: MyProfile },
     { path: '/staff/send-message', exact: true, name: 'ComposeMessage', component: ComposeMessage },
+    { path: '/staff/submission', exact: true, name: 'AssignmentSubmission', component: AssignmentSubmission },
     { path: '/staff/read-message/:id', exact: true, name: 'ReadMessage', component: ReadMessage },
+    { path: '/staff/student-result', exact: true, name: 'PrintStudentResult', component: PrintStudentResult },
+    { path: '/staff/check-result/:id', exact: true, name: 'CheckViewResult', component: CheckViewResult },
 
 
 

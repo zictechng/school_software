@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import Pagination from 'react-js-pagination';
 
 function Class() {
 
-    document.title = "Add Class | ";
+    document.title = "Add Class | " + window.companyName;
     const [classInput, setClass] = useState({
         class_name: '',
         error_list: [],
@@ -16,6 +17,9 @@ function Class() {
     const [isLoadClass, setIsloadClass] = useState(false);
 
     const [class_details, setClassdetails] = useState([]);
+    const [isfetchLoading, setIsFetchloading] = useState(true);
+
+    const [isloading, setIs_Loading] = useState(false);
 
     // declear input handling function here
     const handleInput = (e) => {
@@ -125,31 +129,33 @@ function Class() {
             setIsloading(false);
         });
     }
-
+    var PageNumber = 1;
     // create a function to fetch history here
-    const getClass = (e) => {
-        setIsloadClass(true);
+    const getClass = (PageNumber) => {
+        setIs_Loading(true)
         // let create the api url here
-        axios.get(`/api/fetch_class_details`).then(res => {
+        axios.get(`/api/fetch_class_details?page=${PageNumber}`).then(res => {
             if (res.data.status === 200) {
                 setClassdetails(res.data.class_record);
-                setIsloadClass(false);
+                setIs_Loading(false);
+            }
+            //data not found
+            else if (res.data.status === 404) {
+                toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
+                setIsFetchloading(false);
             }
             // login required
             else if (res.data.status === 401) {
                 toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
             }
-            // No record found
-            else if (res.data.status === 404) {
-                toast.error(res.data.message, { position: 'top-center', theme: 'colored' });
-                setIsloadClass(false);
-            }
+
             else {
                 toast.error("sorry, something went wrong! Try again.", { position: 'top-center', theme: 'colored' });
             }
-            setIsloadClass(false);
+            setIsFetchloading(false);
+            setIs_Loading(false);
         });
-        setIsloadClass(false);
+
     }
 
     // get class when edit button is clicked
@@ -174,9 +180,7 @@ function Class() {
     useEffect(() => {
         // call the function here
         getClass();
-
         return () => {
-
         };
     }, []);
 
@@ -210,48 +214,81 @@ function Class() {
         setDeleteID(id);
         setDeleteAllData(true);
     }
-    /* create veriable to hold the result data */
+    // get page properties for pagination
+    const { data, current_page, per_page, total, from, to, last_page } = class_details
+    const p = {
+        color: "#97a3b9",
+        marginTop: "10px",
+    };
+    if (isfetchLoading) {
+        return (
+            <div className="card-body">
+                <div className='text-center'>
+                    <div className="spinner-border spinner-border text-info" role="status">
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    /* create veritable to hold the result data */
 
     var table_record = "";
-    if (class_details.length > 0) {
-        table_record = <div>
-            <table id="example1" className="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Class Name</th>
-                        <th>Added By</th>
-                        <th>Status</th>
-                        <th>Created Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {class_details.map((item, i) => {
-                        return (
-                            <tr key={i}>
-                                <td>{i + 1}</td>
-                                <td>{item.class_name}</td>
-                                <td>{item.added_by}</td>
-                                <td>{item.status}</td>
-                                <td>{item.record_date}</td>
-                                <td> <span className='badge bg-danger mr-2'><i onClick={(e) => delete_classID(item.id)} className='fa fa-trash-o text-white' type='button'></i></span>
-                                    {" "} {" "}
-                                    <span className='badge bg-primary'><i onClick={() => editClass(item.id)} className='fa fa-pencil text-white' type='button' data-toggle="modal" data-target="#Editclass_modal"></i></span>
-                                </td>
-                            </tr>
-                        )
-                    })
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    else if (class_details.length < 1) {
-        table_record = <div className='text-center'>
-            <p>No record at the moment</p>
-        </div>
-    }
+    // if (class_details.length > 0) {
+    table_record = <div>
+        <table id="example1" className="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Class Name</th>
+                    <th>Added By</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {class_details.data.map((item, i) => {
+                    return (
+                        <tr key={i}>
+                            <td>{i + from}</td>
+                            <td>{item.class_name}</td>
+                            <td>{item.added_by}</td>
+                            <td>{item.status}</td>
+                            <td>{item.record_date}</td>
+                            <td> <span onClick={(e) => delete_classID(item.id)} className='badge bg-danger mr-2'><i className='fa fa-trash-o text-white' type='button'></i></span>
+                                {" "} {" "}
+                                <span onClick={() => editClass(item.id)} className='badge bg-primary'><i className='fa fa-pencil text-white' type='button' data-toggle="modal" data-target="#Editclass_modal"></i></span>
+                            </td>
+                        </tr>
+                    )
+                })
+                }
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content align-items-center mr-3">
+                <span className='mr-2'> </span>
+                <span className='mr-3' style={p}>{current_page} - {to} / {total}</span>
+                <Pagination
+                    activePage={current_page}
+                    totalItemsCount={total}
+                    itemsCountPerPage={per_page}
+                    onChange={(pageNumber) => getAllResult(pageNumber)}
+                    renderOnZeroPageCount={null}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                    firstPageText="First"
+                    lastPageText="Last"
+                />
+            </ul>
+        </nav>
+    </div>
+    // }
+    // else if (class_details.length < 1) {
+    //     table_record = <div className='text-center'>
+    //         <p>No record at the moment</p>
+    //     </div>
+    // }
 
     return (
         <>
@@ -264,23 +301,36 @@ function Class() {
                         </div>
                         <div className="col-sm-6">
                             <ol className="breadcrumb float-sm-right">
-
-                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
                                 <li className='mr-3'><button type="button" className="btn btn-block btn-info btn-sm" data-toggle="modal" data-target="#Addclass_modal">Create New Class</button></li>
+                                <li className='mr-3'><Link to='/admin/index'><button type="button" className="btn btn-block btn-dark btn-sm"><i className='fa fa-home'></i> </button></Link></li>
+
                             </ol>
                         </div>
                     </div>
 
                     <div className="card table-responsive">
-                        <div className="card-header">
+                        <div className="card-header bg-dark">
                             <h3 className="card-title">Current class details</h3>
+                            <div className="d-flex justify-content-between">
+                                <p></p>
+                                <span className="badge mr-2" type="button">
+                                    <input name='title' className='form-control form-control-sm' placeholder='Search...' />
+                                </span>
+                            </div>
                         </div>
                         {/* /.card-header */}
                         <div className="card-body">
-                            <div className='text-center'>
-                                {isLoadClass && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                            {isloading && <div className='overlay text-center'>
+                                <div className="spinner-border spinner-border text-info" role="status">
+                                </div>
+                            </div>}
+                            <div className="card table-responsive">
+                                {class_details.data.length ? table_record :
+                                    <div className='text-center'>
+                                        <p>No record at the moment</p>
+                                    </div>}
                             </div>
-                            {table_record}
+                            {/* {table_record} */}
                         </div>
 
                     </div>

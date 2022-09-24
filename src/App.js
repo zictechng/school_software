@@ -12,6 +12,8 @@ import AdminPrivateRoute from './AdminPrivateRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UserContext } from './context/UserContext';
+import StudentMasterPage from "./layouts/studentlayout/StudentMasterPage";
+import LoginStudent from "./component/auth/LoginStudent";
 
 
 axios.defaults.withCredentials = true;
@@ -26,12 +28,13 @@ axios.defaults.headers.post['accept'] = 'application-json';
 
 /* this for setting token for logged in user to call when logging out */
 axios.interceptors.request.use(function (config) {
-  const token = localStorage.getItem('auth_token');
+  const token = sessionStorage.getItem('auth_token');
   config.headers.Authorization = token ? `Bearer ${token}` : '';
   return config;
 });
-const userID = localStorage.getItem('auth_loggedID');
-const token = localStorage.getItem('auth_token');
+
+const userID = sessionStorage.getItem('auth_loggedID');
+const token = sessionStorage.getItem('auth_token');
 
 function App() {
 
@@ -84,6 +87,7 @@ function App() {
           <Route exact path="/register" component={Register} />
           <Route exact path="/forgot-password" component={Forgotpassword} />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/student-login" component={LoginStudent} />
 
           {/* <PublicRoute path="/" name="Home" />
          <Route path="/403" component={Page403}/>
@@ -91,10 +95,13 @@ function App() {
 
           {/* this will protect the route not to show if user have logged in already */}
           <Route path="/login">
-            {localStorage.getItem('auth_token') ? <Redirect to='/admin/index' /> : <Login />}
+            {sessionStorage.getItem('auth_token') ? <Redirect to='/admin/index' /> : <Login />}
           </Route>
           <Route path="/register">
-            {localStorage.getItem('auth_token') ? <Redirect to='/admin/index' /> : <Register />}
+            {sessionStorage.getItem('auth_token') ? <Redirect to='/admin/index' /> : <Register />}
+          </Route>
+          <Route path="/student-login">
+            {sessionStorage.getItem('auth_token') ? <Redirect to='/student/index' /> : <LoginStudent />}
           </Route>
           {/* Ends here  */}
           {/* {
@@ -109,6 +116,8 @@ function App() {
 
           {/* <AdminPrivateRoute path="/admin" name="Admin" /> */}
           <Route path="/staff" name="Staff" render={(props) => <StaffMasterpage {...props} />} />
+
+          <Route path="/student" name="Student" render={(props) => <StudentMasterPage {...props} />} />
 
           {/* Let define another method of routes in reacjs, we are going to 
          have a separate route file to handle all route then call it here. */}

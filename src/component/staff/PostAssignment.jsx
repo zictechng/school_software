@@ -68,9 +68,16 @@ function PostAssignment() {
                             theme: "colored",
                         });
                         setIsloading(false);
-                        history.push('/staff/index');
+                        history.push('/staff/assignment');
                     }
                     else if (res.data.status === 403) {
+                        toast.error(res.data.message, {
+                            theme: "colored",
+                        });
+                        setIsloading(false);
+                    }
+                    // file too large here
+                    else if (res.data.status === 405) {
                         toast.error(res.data.message, {
                             theme: "colored",
                         });
