@@ -96,9 +96,9 @@ function LoginStudent() {
 
     return (
         <>
-            <div className="hold-transition login-page">
+            <div className="hold-transition login-page" style={{ background: 'url("/../../../dist/img/liftsoft_bg.jpg")', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
                 <div className="login-box">
-                    <div className="card card-outline card-primary">
+                    <div className="card card-outline card-primary shadow-lg">
                         <div className="card-header text-center">
                             <Link to="#" className="h1"><b>Lift </b>Soft</Link>
                         </div>

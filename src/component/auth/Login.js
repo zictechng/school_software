@@ -90,13 +90,14 @@ function Login() {
 
     return (
         <>
-            <div className="hold-transition login-page">
+            <div className="hold-transition login-page" style={{ background: 'url("/../../../dist/img/liftsoft_bg1.jpg")', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
                 <div className="login-box">
                     {/* /.login-logo */}
-                    <div className="card card-outline card-primary">
-                        <div className="card-header text-center">
+                    <div className="card card-outline card-primary shadow-lg">
+                        <div className="card-header text-center" >
                             <Link to="#" className="h1"><b>Lift </b>Soft</Link>
                         </div>
+
                         <div className="card-body">
                             <p className="login-box-msg">Sign in to explore</p>
                             <form onSubmit={loginSubmit}>
